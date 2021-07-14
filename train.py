@@ -13,13 +13,13 @@ import matplotlib.animation as animation
 from IPython.display import HTML
 from model import Encoder, Generator, Discriminator
 import logging
-from config import lr, batch_size, num_epochs, beta1, gi
+from config import lr, batch_size, num_epochs, beta1, gi, model_path
 from dataloader import ImageDataLoader
 from tqdm import tqdm
 
 
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = 'cuda'#torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 print(f'Training running on {device}')
 encoder = Encoder().to(device)
@@ -27,10 +27,7 @@ generator = Generator().to(device)
 discriminator = Discriminator().to(device)
 
 criterion = nn.BCELoss()
-
-real_label = 1.0
-fake_label = 0.0
-
+loss = nn.L1Loss()
 
 encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr, betas=(beta1, 0.999))
 generator_optimizer = optim.Adam(generator.parameters(), lr=lr, betas=(beta1, 0.999))
@@ -43,7 +40,7 @@ iters = 0
 
 dataloader = ImageDataLoader().train_loader
 
-epochs = 5
+epochs = 1
 
 data_iter = enumerate(tqdm(dataloader))
 
@@ -56,8 +53,11 @@ for epoch in range(epochs):
     for i, data in data_iter:
         
         images = data[0].to(device)
-        encoded = encoder(data)
+        encoded = encoder(images)
         generated = generator(encoded)
+
+        real_label = torch.FloatTensor(np.full((images.size(0)), 1.0, dtype=float)).to(device)
+        fake_label = torch.FloatTensor(np.full((images.size(0)), 0.0, dtype=float)).to(device)
         
         #discriminator training
         discriminator.zero_grad()
@@ -70,8 +70,8 @@ for epoch in range(epochs):
         r_label = torch.FloatTensor(np.random.uniform(low=0.855, high=0.999, size=(images.size(0)))).to(device)
         r_discriminator_output = discriminator(real_input).view(-1)
         r_discriminator_error = criterion(r_discriminator_output, r_label)
-        r_discriminator_error.backward(retain_graph=True)
         Dx = r_discriminator_output.mean().item()
+        
 
         fake_input = {
             'img' : generated,
@@ -81,24 +81,32 @@ for epoch in range(epochs):
         f_label = torch.FloatTensor(np.random.uniform(low=0.005, high=0.155, size=(images.size(0)))).to(device)
         f_discriminator_output = discriminator(fake_input).view(-1)
         f_discriminator_error = criterion(f_discriminator_output, f_label)
-        f_discriminator_error.backward(retain_graph=True)
         DGz = f_discriminator_output.mean().item()
 
         discriminator_error = r_discriminator_error + f_discriminator_error
-        discriminator_optimizer.step()
+        
 
         #generator training
         generator.zero_grad()
-        generator_error = criterion(f_discriminator_output. real_label) + 2*nn.L1Loss(images, generated)
-        generated_error.backward(retain_graph=True)
+        generated_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
         generator_loss = f_discriminator_output.mean().item()
-        generator_optimizer.step()
+        
 
         #encoder training
         encoder.zero_grad()
-        encoder_error = criterion(f_discriminator_output. real_label) + 2*nn.L1Loss(images, generated)
-        encoder_error.backward(retain_graph=True)
+        encoder_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
         encoder_loss = f_discriminator_output.mean().item()
+        
+
+        r_discriminator_error.backward(retain_graph=True)
+        f_discriminator_error.backward(retain_graph=True)
+        generated_error.backward(retain_graph=True)
+        encoder_error.backward(retain_graph=True)
+        
+
+        
+        discriminator_optimizer.step()
+        generator_optimizer.step()
         encoder_optimizer.step()
 
         
@@ -109,3 +117,7 @@ for epoch in range(epochs):
 
 
         torch.cuda.empty_cache()
+
+torch.save(encoder.state_dict, model_path + 'encoder.pth')
+torch.save(generator.state_dict, model_path + 'generator.pth')
+torch.save(discriminator.state_dict, model_path + 'discriminator.pth')
