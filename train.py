@@ -16,6 +16,7 @@ import logging
 from config import lr, batch_size, num_epochs, beta1, gi, model_path
 from dataloader import ImageDataLoader
 from tqdm import tqdm
+from os import path
 
 
 
@@ -25,6 +26,17 @@ print(f'Training running on {device}')
 encoder = Encoder().to(device)
 generator = Generator().to(device)
 discriminator = Discriminator().to(device)
+
+if (
+    
+    path.isfile(model_path + 'encoder.pth')
+    and path.isfile(model_path + 'generator.pth')
+    and path.isfile(model_path + 'discriminator.pth')
+):
+    print("Loading models...")
+    encoder.load_state_dict(torch.load(model_path + 'encoder.pth'))
+    generator.load_state_dict(torch.load(model_path + 'generator.pth'))
+    discriminator.load_state_dict(torch.load(model_path + 'discriminator.pth'))
 
 criterion = nn.BCELoss()
 loss = nn.L1Loss()
@@ -40,9 +52,7 @@ iters = 0
 
 dataloader = ImageDataLoader().train_loader
 
-epochs = 1
-
-data_iter = enumerate(tqdm(dataloader))
+epochs = 20
 
 encoder.train()
 generator.train()
@@ -50,8 +60,7 @@ discriminator.train()
 
 
 for epoch in range(epochs):
-    for i, data in data_iter:
-        
+    for i, data in enumerate(tqdm(dataloader)):
         images = data[0].to(device)
         encoded = encoder(images)
         generated = generator(encoded)
@@ -85,39 +94,32 @@ for epoch in range(epochs):
 
         discriminator_error = r_discriminator_error + f_discriminator_error
         
-
         #generator training
         generator.zero_grad()
         generated_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
         generator_loss = f_discriminator_output.mean().item()
         
-
         #encoder training
         encoder.zero_grad()
         encoder_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
         encoder_loss = f_discriminator_output.mean().item()
         
-
-        r_discriminator_error.backward(retain_graph=True)
-        f_discriminator_error.backward(retain_graph=True)
+        discriminator_error.backward(retain_graph=True)
         generated_error.backward(retain_graph=True)
-        encoder_error.backward(retain_graph=True)
-        
-
+        encoder_error.backward()
         
         discriminator_optimizer.step()
         generator_optimizer.step()
         encoder_optimizer.step()
 
-        
         if i % 50 == 0:
             print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tLoss_E: %.4f\tD(x): %.4f\tD(G(z)): %.4f'
-                  % (epoch, epochs, i, len(dataloader),
+                  % (epoch+1, epochs, i, len(dataloader),
                      discriminator_error.item(), generated_error.item(), encoder_error.item(), Dx, DGz))
 
 
         torch.cuda.empty_cache()
 
-torch.save(encoder.state_dict, model_path + 'encoder.pth')
-torch.save(generator.state_dict, model_path + 'generator.pth')
-torch.save(discriminator.state_dict, model_path + 'discriminator.pth')
+torch.save(encoder.state_dict(), model_path + 'encoder.pth')
+torch.save(generator.state_dict(), model_path + 'generator.pth')
+torch.save(discriminator.state_dict(), model_path + 'discriminator.pth')
