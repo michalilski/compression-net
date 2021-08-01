@@ -2,7 +2,7 @@
 data_path = "data/"
 model_path = "model/"
 batch_size = 10
-image_size = 64
+image_size = 128
 channels = 3
 
 #Generator:

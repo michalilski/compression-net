@@ -39,6 +39,7 @@ if (
     discriminator.load_state_dict(torch.load(model_path + 'discriminator.pth'))
 
 criterion = nn.BCELoss()
+#SSIM
 loss = nn.L1Loss()
 
 encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr, betas=(beta1, 0.999))
@@ -52,7 +53,7 @@ iters = 0
 
 dataloader = ImageDataLoader().train_loader
 
-epochs = 20
+epochs = 10
 
 encoder.train()
 generator.train()

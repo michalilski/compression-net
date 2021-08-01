@@ -18,7 +18,8 @@ class Encoder(nn.Module):
         # 64x64x64
         self.e_conv_1 = nn.Sequential(
             nn.ZeroPad2d((1, 2, 1, 2)),
-            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=(5, 5), stride=(2, 2)),nn.LeakyReLU()
+            nn.Conv2d(in_channels=3, out_channels=64, kernel_size=(5, 5), stride=(2, 2)),
+            nn.LeakyReLU()
         )
 
         # 128x32x32
@@ -76,15 +77,6 @@ class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
         
-        # DECODER
-#         self.latent_fc1 = nn.Sequential(
-#             nn.Linear(latent_size,1000),
-#             nn.Sigmoid(),
-#         )
-#         self.latent_fc2 = nn.Sequential(
-#             nn.Linear(1000,54*44),
-#             nn.Sigmoid(),
-#         )
         # 128x64x64
         self.d_up_conv_1 = nn.Sequential(
         nn.Conv2d(in_channels=num_channels_in_encoder, out_channels=64, kernel_size=(3, 3), stride=(1, 1)),

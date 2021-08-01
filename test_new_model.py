@@ -1,0 +1,30 @@
+from dataloader import ImageDataLoader
+from transforms import ImageTransform
+import matplotlib.pyplot as plt
+from model2 import Generator, Encoder
+import torch
+from config import model_path
+
+
+def main():
+    device = 'cuda'
+
+    dataloader = ImageDataLoader().test_loader
+    iterator = iter(dataloader)
+    raw_batch = iterator.next()
+    data = raw_batch[0]
+    data = data.to(device)
+    print(data.shape)
+
+    encoder = Encoder().to(device)
+
+    generator = Generator().to(device)
+
+    encoded = encoder(data)
+
+    print()
+
+    generated = generator(encoded)
+
+if __name__ == '__main__':
+    main()
