@@ -1,7 +1,7 @@
 #Data
 data_path = "data/"
-model_path = "model/"
-batch_size = 10
+model_path = "model2/"
+batch_size = 20
 image_size = 128
 channels = 3
 

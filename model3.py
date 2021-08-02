@@ -8,54 +8,62 @@ class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.l1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(4,4), stride=(2,2)),
+            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(5,5), stride=(3,3)),
             nn.LeakyReLU()
         )
         self.l2 = nn.Sequential(
             nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(4,4), stride=(2,2)),
+            nn.Conv2d(in_channels=32, out_channels=128, kernel_size=(5,5), stride=(2,2)),
             nn.LeakyReLU()
         )
         self.l3 = nn.Sequential(
             nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(2,2)),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(4,4), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l4 = nn.Sequential(
-            nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(1,1)),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l5 = nn.Sequential(
-            nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(1,1)),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l6 = nn.Sequential(
-            nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(1,1)),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l7 = nn.Sequential(
             nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(1,1)),
+            nn.Conv2d(in_channels=128, out_channels=32, kernel_size=(3,3), stride=(1,1), padding=(2,2)),
             nn.LeakyReLU()
         )
         self.l8 = nn.Sequential(
-            nn.ReflectionPad2d((1,2,1,2)),
-            nn.Conv2d(in_channels=32, out_channels=ENCODER_OUTPUT_CHANNELS, kernel_size=(2,2), stride=(1,1)),
+            nn.ReflectionPad2d(2),
+            nn.Conv2d(in_channels=32, out_channels=ENCODER_OUTPUT_CHANNELS, kernel_size=(5,5), stride=(1,1), padding=(2,2)),
             nn.Tanh()
         )
 
     def forward(self, x):
         x = self.l1(x)
+        print(x.shape)
         x = self.l2(x)
+        print(x.shape)
         x = self.l3(x)
+        print(x.shape)
         x = self.l4(x)
+        print(x.shape)
         x = self.l5(x)
+        print(x.shape)
         x = self.l6(x)
+        print(x.shape)
         x = self.l7(x)
+        print(x.shape)
         x = self.l8(x)
+        print(x.shape)
 
         return x
 

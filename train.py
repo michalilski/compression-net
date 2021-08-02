@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
-from model import Encoder, Generator, Discriminator
+from model2 import Encoder, Generator, Discriminator
 import logging
 from config import lr, batch_size, num_epochs, beta1, gi, model_path
 from dataloader import ImageDataLoader

@@ -1,6 +1,9 @@
 data
 __pycache__
-model
+model*
 env.sh
 .*
 !.gitignore
+help
+help.ipynb
+install.sh
