@@ -1,6 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn.modules.activation import LeakyReLU, Tanh
+from torch.nn.modules.padding import ReflectionPad2d
 
 ENCODER_OUTPUT_CHANNELS = 32
 
@@ -8,195 +9,219 @@ class Encoder(nn.Module):
     def __init__(self):
         super(Encoder, self).__init__()
         self.l1 = nn.Sequential(
-            nn.Conv2d(in_channels=3, out_channels=32, kernel_size=(5,5), stride=(3,3)),
+            nn.Conv2d(in_channels=3, out_channels=16, kernel_size=(5,5), stride=(2,2), padding=2),
             nn.LeakyReLU()
         )
         self.l2 = nn.Sequential(
-            nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=128, kernel_size=(5,5), stride=(2,2)),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=16, out_channels=128, kernel_size=(4,4), stride=(2,2)),
             nn.LeakyReLU()
         )
-        self.l3 = nn.Sequential(
-            nn.ReflectionPad2d(2),
+        self.l34 = nn.Sequential(
+            nn.ReflectionPad2d((2,1,2,1)),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(4,4), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l4 = nn.Sequential(
+            nn.LeakyReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(1,1), stride=(1,1)),
+            nn.LeakyReLU(),
+        
             nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
-        self.l5 = nn.Sequential(
+        self.l56 = nn.Sequential(
             nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l6 = nn.Sequential(
+            nn.LeakyReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(1,1), stride=(1,1)),
+            nn.LeakyReLU(),
+
             nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l7 = nn.Sequential(
-            nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=128, out_channels=32, kernel_size=(3,3), stride=(1,1), padding=(2,2)),
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=64, kernel_size=(3,3), stride=(1,1)),
             nn.LeakyReLU()
         )
         self.l8 = nn.Sequential(
             nn.ReflectionPad2d(2),
-            nn.Conv2d(in_channels=32, out_channels=ENCODER_OUTPUT_CHANNELS, kernel_size=(5,5), stride=(1,1), padding=(2,2)),
-            nn.Tanh()
+            nn.Conv2d(in_channels=64, out_channels=ENCODER_OUTPUT_CHANNELS, kernel_size=(5,5), stride=(1,1)),
+            nn.Softmax(dim=1)
         )
 
     def forward(self, x):
         x = self.l1(x)
-        print(x.shape)
         x = self.l2(x)
-        print(x.shape)
-        x = self.l3(x)
-        print(x.shape)
-        x = self.l4(x)
-        print(x.shape)
-        x = self.l5(x)
-        print(x.shape)
-        x = self.l6(x)
-        print(x.shape)
+        x = self.l34(x) + x
+        x = self.l56(x) + x
         x = self.l7(x)
-        print(x.shape)
         x = self.l8(x)
-        print(x.shape)
-
         return x
 
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
+
         self.l1 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=ENCODER_OUTPUT_CHANNELS, out_channels=32, kernel_size=(1,1), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l2 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=(1,1), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l3 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=(1,1), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l4 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=16, kernel_size=(2,2), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l5 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=8, kernel_size=(2,2), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l6 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=8, out_channels=3, kernel_size=(2,2), stride=(2,2)),
-            nn.LeakyReLU()
-        )
-        self.l7 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=3, out_channels=3, kernel_size=(3,3), stride=(2,2)),
-            nn.LeakyReLU()
-        )
-        self.l8 = nn.Sequential(
-            nn.ZeroPad2d(2),
-            nn.ConvTranspose2d(in_channels=3, out_channels=3, kernel_size=(4,4), stride=(1,1)),
-            nn.Tanh()
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=(2,2), stride=(2,2)),
         )
 
+        self.l34 = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(1,1), stride=(1,1)),
+            nn.LeakyReLU(),
+        
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU()
+        )
+        self.l56 = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(1,1), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU()
+        )
+
+        self.l78 = nn.Sequential(
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(1,1), stride=(1,1)),
+            nn.LeakyReLU(),
+
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=128, out_channels=128, kernel_size=(3,3), stride=(1,1)),
+            nn.LeakyReLU()
+        )
+
+        self.l9 = nn.Sequential(
+            nn.ConvTranspose2d(in_channels=128, out_channels=32, kernel_size=(3,3), stride=(2,2)),
+
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=(3,3), stride=(2,2)),
+            nn.LeakyReLU()
+        )
+        self.l10 = nn.Sequential(
+            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=(2,2), stride=(2,2)),
+
+            nn.ReflectionPad2d(1),
+            nn.Conv2d(in_channels=32, out_channels=3, kernel_size=(3,3), stride=(1,1)),
+            nn.Softmax(dim=1)
+        )
+        
     def forward(self, x):
-        x = self.l1(x)
-        x = self.l2(x)
-        x = self.l3(x)
-        x = self.l4(x)
-        x = self.l5(x)
-        x = self.l6(x)
-        x = self.l7(x)
-        x = self.l8(x)
-
+        x = self.l1(x)       
+        x = self.l34(x) + x       
+        x = self.l56(x) + x       
+        x = self.l78(x) + x
+        x = self.l9(x)
+        x = self.l10(x)
         return x
 
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
-        self.l1 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=ENCODER_OUTPUT_CHANNELS, out_channels=32, kernel_size=(2,2), stride=(1,1)),
-            nn.LeakyReLU()
+        self.latent_layer1 = nn.Sequential(
+            nn.ConvTranspose2d(ENCODER_OUTPUT_CHANNELS, 12, (3,3), stride=1, padding=0, output_padding=0, groups=1, bias=True, dilation=1),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
-        self.l2 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=32, out_channels=16, kernel_size=(2,2), stride=(2,2), padding=1),
-            nn.LeakyReLU()
+        self.latent_layer2 = nn.Sequential(
+            nn.ConvTranspose2d(12, 16, (3,3), stride=1, padding=2, output_padding=0, groups=1, bias=True, dilation=1),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
-        self.l3 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=16, out_channels=16, kernel_size=(2,2), stride=(2,2)),
-            nn.LeakyReLU()
+        self.latent_layer3 = nn.Sequential(
+            nn.ConvTranspose2d(16, 24, (3,3), stride=2, padding=2, output_padding=1, groups=1, bias=True, dilation=1),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
-        self.l4 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=16, out_channels=8, kernel_size=(1,1), stride=(1,1)),
-            nn.LeakyReLU()
+        self.latent_layer4 = nn.Sequential(
+            nn.ConvTranspose2d(24, 36, (5,5), stride=2, padding=0, output_padding=1, groups=1, bias=True, dilation=1),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
-        self.l5 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=8, out_channels=3, kernel_size=(1,1), stride=(1,1)),
-            nn.Tanh()
-        )
-
-        self.l6 = nn.Sequential(
-            nn.Conv2d(in_channels=6, out_channels=8, kernel_size=(2,2), stride=(1,1)),
-            nn.LeakyReLU()
-        )
-        self.l7 = nn.Sequential(
-            nn.Conv2d(in_channels=8, out_channels=16, kernel_size=(2,2), stride=(2,2), padding=1),
-            nn.LeakyReLU()
-        )
-        self.l8 = nn.Sequential(
-            nn.Conv2d(in_channels=16, out_channels=32, kernel_size=(2,2), stride=(2,2)),
-            nn.LeakyReLU()
-        )
-        self.l9 = nn.Sequential(
-            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=(2,2), stride=(2,2)),
-            nn.LeakyReLU()
-        )
-        self.l10 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=128, kernel_size=(4,4), stride=(4,4)),
-            nn.LeakyReLU()
+        self.latent_layer5 = nn.Sequential(
+            nn.ConvTranspose2d(36, 3, (3,3), stride=1, padding=1, output_padding=0, groups=1, bias=True, dilation=1),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Tanh(),
         )
 
-        self.l11 = nn.Sequential(
-            nn.Linear(in_features=2048, out_features=256),
-            nn.Sigmoid()
+        
+        self.layer1 = nn.Sequential(
+            nn.Conv2d(in_channels=6, out_channels=32, kernel_size=3,stride = 1,padding=0),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Dropout(0.3),
         )
-
-        self.l12 = nn.Sequential(
-            nn.Linear(in_features=256, out_features=32),
-            nn.Sigmoid()
+        self.layer2 = nn.Sequential(
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=5,stride = 2,padding=0),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Dropout(0.3),
         )
-
-        self.l13 = nn.Sequential(
-            nn.Linear(in_features=32, out_features=1),
-            nn.Sigmoid()
+        self.layer3 = nn.Sequential(
+            nn.Conv2d(in_channels=64, out_channels=16, kernel_size=3,stride = 2,padding=2),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Dropout(0.3),
         )
-
+        self.layer4 = nn.Sequential(
+            nn.Conv2d(in_channels=16, out_channels=8, kernel_size=3,stride = 1,padding=2),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Dropout(0.3),
+        )
+        self.layer5 = nn.Sequential(
+            nn.Conv2d(in_channels=8, out_channels=4, kernel_size=3,stride = 1,padding=0),
+            nn.LeakyReLU(negative_slope=0.2, inplace=True),
+            nn.Dropout(0.3),
+            nn.Tanh(),
+        )
+        
+        
+        self.fc1 = nn.Sequential(
+            nn.Linear(4096,100),
+            nn.Sigmoid(),
+        )
+        
+        self.fc2 = nn.Sequential(
+            nn.Linear(100,10),
+            nn.Sigmoid(),
+        )
+        self.fc3 = nn.Sequential(
+            nn.Linear(10,1),
+            nn.Sigmoid(),
+        )
+        
+        
     def forward(self, x):
-        enc = x['encoded']
-        out = self.l1(enc)
-        out = self.l2(out)
-        out = self.l3(out)
-        out = self.l4(out)
-        out = self.l5(out)
-
-        out = torch.cat((x['img'],out), 1)
-
-
-        out = self.l6(out)
-        out = self.l7(out)
-        out = self.l8(out)
-        out = self.l9(out)
-        out = self.l10(out)
-
-
-        out = out.view(-1, 2048)
-        out = self.l11(out)
-        out = self.l12(out)
-        out = self.l13(out)
-
-        return out
+        y = x['encoded'].to('cuda')
+        y = self.latent_layer1(y)
+        y = self.latent_layer2(y)
+        y = self.latent_layer3(y)
+        y = self.latent_layer4(y)
+        y = self.latent_layer5(y)
+#         
+        x = x['img'].to('cuda')
+#         
+        x = torch.cat((x,y),1)
+        x = self.layer1(x)
+        x = self.layer2(x)
+        x = self.layer3(x)
+        x = self.layer4(x)
+        x = self.layer5(x)
+#         
+        x = x.reshape((x.shape[0],-1))
+        x = self.fc1(x)
+        x = self.fc2(x)
+        x = self.fc3(x)
+        return x

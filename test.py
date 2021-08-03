@@ -1,7 +1,7 @@
 from dataloader import ImageDataLoader
 from transforms import ImageTransform
 import matplotlib.pyplot as plt
-from model2 import Generator, Encoder
+from model3 import Generator, Encoder
 import torch
 from config import model_path
 

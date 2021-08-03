@@ -11,7 +11,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
-from model2 import Encoder, Generator, Discriminator
+from model3 import Encoder, Generator, Discriminator
 import logging
 from config import lr, batch_size, num_epochs, beta1, gi, model_path
 from dataloader import ImageDataLoader
@@ -107,7 +107,7 @@ for epoch in range(epochs):
         
         discriminator_error.backward(retain_graph=True)
         generated_error.backward(retain_graph=True)
-        encoder_error.backward()
+        encoder_error.backward(retain_graph=True)
         
         discriminator_optimizer.step()
         generator_optimizer.step()
