@@ -1,6 +1,8 @@
-from config import mean, std, image_size
-from torchvision import transforms
 import torch
+from torchvision import transforms
+
+from config import image_size, mean, std
+
 
 class ImageTransform():
     def __init__(self):

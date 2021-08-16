@@ -1,24 +1,23 @@
-import torch
-import torch.nn as nn
+import logging
+from os import path
 
+import matplotlib.animation as animation
+import matplotlib.pyplot as plt
+import numpy as np
+import torch
 import torch.backends.cudnn as cudnn
+import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.datasets as dset
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
 from IPython.display import HTML
-from model3 import Encoder, Generator, Discriminator
-import logging
-from config import lr, batch_size, num_epochs, beta1, gi, model_path
-from dataloader import ImageDataLoader
 from tqdm import tqdm
-from os import path
 
-
+from config import batch_size, beta1, gi, lr, model_path, num_epochs
+from dataloader import ImageDataLoader
+from model import Discriminator, Encoder, Generator
 
 device = 'cuda'#torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -53,7 +52,7 @@ iters = 0
 
 dataloader = ImageDataLoader().train_loader
 
-epochs = 10
+epochs = 40
 
 encoder.train()
 generator.train()
@@ -113,14 +112,15 @@ for epoch in range(epochs):
         generator_optimizer.step()
         encoder_optimizer.step()
 
-        if i % 50 == 0:
+        if i % 10 == 0:
             print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tLoss_E: %.4f\tD(x): %.4f\tD(G(z)): %.4f'
                   % (epoch+1, epochs, i, len(dataloader),
                      discriminator_error.item(), generated_error.item(), encoder_error.item(), Dx, DGz))
 
 
         torch.cuda.empty_cache()
-
-torch.save(encoder.state_dict(), model_path + 'encoder.pth')
-torch.save(generator.state_dict(), model_path + 'generator.pth')
-torch.save(discriminator.state_dict(), model_path + 'discriminator.pth')
+        
+    print("Saving model...")
+    torch.save(encoder.state_dict(), model_path + 'encoder.pth')
+    torch.save(generator.state_dict(), model_path + 'generator.pth')
+    torch.save(discriminator.state_dict(), model_path + 'discriminator.pth')

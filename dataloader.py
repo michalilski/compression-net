@@ -1,9 +1,8 @@
-from torch.utils.data import random_split
-from torch.utils.data import DataLoader
-from config import data_path, train_data_part, batch_size
-from transforms import ImageTransform
+from torch.utils.data import DataLoader, random_split
 from torchvision import datasets
 
+from config import batch_size, data_path, train_data_part
+from transforms import ImageTransform
 
 
 class ImageDataLoader():

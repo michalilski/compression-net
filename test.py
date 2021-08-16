@@ -1,9 +1,10 @@
-from dataloader import ImageDataLoader
-from transforms import ImageTransform
 import matplotlib.pyplot as plt
-from model3 import Generator, Encoder
 import torch
+
 from config import model_path
+from dataloader import ImageDataLoader
+from model import Encoder, Generator
+from transforms import ImageTransform
 
 
 def main():
