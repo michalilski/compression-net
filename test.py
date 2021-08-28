@@ -6,7 +6,7 @@ from dataloader import ImageDataLoader
 from model import Encoder, Generator
 from transforms import ImageTransform
 
-
+#model_path = 'model-vgg/'
 def main():
     device = 'cuda'
 

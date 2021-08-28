@@ -1,7 +1,7 @@
 #Data
 data_path = "data/"
-model_path = "model/"
-batch_size = 8
+model_path = "model-vgg-color/"
+batch_size = 4
 image_size = 256
 channels = 3
 
@@ -16,8 +16,8 @@ gf = 64
 df = 32
 
 #Transforms:
-mean = (0.5, 0.5, 0.5)
-std = (0.24703223,  0.24348513 , 0.26158784)
+mean = (0.485, 0.456, 0.406)
+std = (0.229, 0.224, 0.225)
 
 #Training:
 train_data_part = 0.6

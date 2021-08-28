@@ -1,6 +1,6 @@
 import logging
 from os import path
-
+from pytorch_metric_learning import losses
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
@@ -10,6 +10,7 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.utils.data
 import torchvision.datasets as dset
+from torchvision.models import vgg
 import torchvision.transforms as transforms
 import torchvision.utils as vutils
 from IPython.display import HTML
@@ -18,6 +19,9 @@ from tqdm import tqdm
 from config import batch_size, beta1, gi, lr, model_path, num_epochs
 from dataloader import ImageDataLoader
 from model import Discriminator, Encoder, Generator
+from loss_network import LossNetwork
+from numpy import mean
+from transforms import ImageTransform
 
 device = 'cuda'#torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -38,8 +42,16 @@ if (
     discriminator.load_state_dict(torch.load(model_path + 'discriminator.pth'))
 
 criterion = nn.BCELoss()
-#SSIM
+#TODO SSIM
 loss = nn.L1Loss()
+
+mse_loss = nn.MSELoss()
+
+vgg_model = vgg.vgg16(pretrained=True)
+if torch.cuda.is_available():
+    vgg_model.cuda()
+loss_network = LossNetwork(vgg_model).to(device)
+loss_network.eval()
 
 encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr, betas=(beta1, 0.999))
 generator_optimizer = optim.Adam(generator.parameters(), lr=lr, betas=(beta1, 0.999))
@@ -94,15 +106,30 @@ for epoch in range(epochs):
 
         discriminator_error = r_discriminator_error + f_discriminator_error
         
-        #generator training
+        # generator training
         generator.zero_grad()
-        generated_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
-        generator_loss = f_discriminator_output.mean().item()
+        raw_img_features = loss_network(images)
+        gen_features = loss_network(generated)
+
+        with torch.no_grad():
+            img_features = raw_img_features[2].detach()
+
+        vgg_loss = mse_loss(gen_features[2],img_features)
+        reg_loss = 1e-6 * (
+            torch.sum(torch.abs(generated[:, :, :, :-1] - generated[:, :, :, 1:])) + 
+            torch.sum(torch.abs(generated[:, :, :-1, :] - generated[:, :, 1:, :]))
+        )
+
+        generated_error = (
+            criterion(f_discriminator_output, real_label) 
+            + 2*loss(generated, images) 
+            + vgg_loss
+            #+ reg_loss
+        )
         
         #encoder training
         encoder.zero_grad()
         encoder_error = criterion(f_discriminator_output, real_label) + 2*loss(generated, images)
-        encoder_loss = f_discriminator_output.mean().item()
         
         discriminator_error.backward(retain_graph=True)
         generated_error.backward(retain_graph=True)
@@ -116,7 +143,6 @@ for epoch in range(epochs):
             print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tLoss_E: %.4f\tD(x): %.4f\tD(G(z)): %.4f'
                   % (epoch+1, epochs, i, len(dataloader),
                      discriminator_error.item(), generated_error.item(), encoder_error.item(), Dx, DGz))
-
 
         torch.cuda.empty_cache()
         
