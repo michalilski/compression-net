@@ -6,9 +6,9 @@ from dataloader import ImageDataLoader
 from model import Encoder, Generator
 from transforms import ImageTransform
 
-#model_path = 'model-vgg/'
+
 def main():
-    device = 'cuda'
+    device = "cuda"
 
     dataloader = ImageDataLoader().test_loader
     image_transform = ImageTransform()
@@ -21,8 +21,8 @@ def main():
     encoder = Encoder().to(device)
     generator = Generator().to(device)
 
-    encoder.load_state_dict(torch.load(model_path + 'encoder.pth'))
-    generator.load_state_dict(torch.load(model_path + 'generator.pth'))
+    encoder.load_state_dict(torch.load(model_path + "encoder.pth"))
+    generator.load_state_dict(torch.load(model_path + "generator.pth"))
 
     encoder.eval()
     generator.eval()
@@ -34,10 +34,11 @@ def main():
 
     generated_image = image_transform.denormalize(image)
 
-    _, grid = plt.subplots(1,2)
-    grid[0].imshow(original_image.permute(1,2,0))
-    grid[1].imshow(generated_image.permute(1,2,0))
+    _, grid = plt.subplots(1, 2)
+    grid[0].imshow(original_image.permute(1, 2, 0))
+    grid[1].imshow(generated_image.permute(1, 2, 0))
     plt.show()
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

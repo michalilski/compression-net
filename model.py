@@ -1,10 +1,5 @@
 import torch
 import torch.nn as nn
-from torch.nn.modules.activation import LeakyReLU, Softmax, Tanh
-from torch.nn.modules.conv import Conv2d
-from torch.nn.modules.padding import ReflectionPad2d, ZeroPad2d
-
-from config import batch_size
 
 ENCODER_OUTPUT_CHANNELS = 64
 
@@ -64,7 +59,7 @@ class Encoder(nn.Module):
         )
         self.l10 = nn.Sequential(
             nn.ZeroPad2d(2),
-            nn.Conv2d(in_channels=64, out_channels=ENCODER_OUTPUT_CHANNELS, kernel_size=(5,5), stride=(1,1)),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(5,5), stride=(1,1)),
             nn.Softmax2d()
         )
 
@@ -76,14 +71,13 @@ class Encoder(nn.Module):
         x = self.l78(x) + x
         x = self.l9(x)
         x = self.l10(x)
-        # print(x.size())
         return x
 
 class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
         self.l1 = nn.Sequential(
-            nn.Conv2d(in_channels=ENCODER_OUTPUT_CHANNELS, out_channels=64, kernel_size=3, stride=1),
+            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
             nn.LeakyReLU(),
             nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=2, stride=2)
         )
@@ -142,7 +136,6 @@ class Generator(nn.Module):
         x = self.l4(x) + x
         x = self.l5(x)
         x = self.l6(x)
-        # print(dec.size())
         return x
 
 
@@ -151,7 +144,7 @@ class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
         self.l1 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=ENCODER_OUTPUT_CHANNELS, out_channels=32, kernel_size=3, stride=2),
+            nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=3, stride=2),
             nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
         self.l2 = nn.Sequential(
@@ -220,15 +213,13 @@ class Discriminator(nn.Module):
         
     def forward(self, x):
         y = x['encoded'].to('cuda')
-        #print(y.shape)
         y = self.l1(y)
         y = self.l2(y)
         y = self.l3(y)
         y = self.l4(y)
         y = self.l5(y)
-        #print(y.shape)
+
         x = x['img'].to('cuda')
-        #print(x.shape)
         x = torch.cat((x,y),1)
         x = self.l6(x)
         x = self.l7(x)
@@ -236,7 +227,7 @@ class Discriminator(nn.Module):
         x = self.l9(x)
         x = self.l10(x)
         
-        x= x.reshape((x.shape[0],-1))
+        x = x.reshape((x.shape[0],-1))
         x = self.lin1(x)
         x = self.lin2(x)
         x = self.lin3(x)
