@@ -1,3 +1,4 @@
+from utils.entropy_manager import EntropyManager
 import matplotlib.pyplot as plt
 import torch
 
@@ -9,10 +10,12 @@ from transforms import ImageTransform
 
 def main():
     device = "cuda"
+    entropy_manager = EntropyManager()
 
-    dataloader = ImageDataLoader().test_loader
+    test_loader = ImageDataLoader().test_loader
+    train_loader = ImageDataLoader().train_loader
     image_transform = ImageTransform()
-    iterator = iter(dataloader)
+    iterator = iter(test_loader)
     raw_batch = iterator.next()
     data = raw_batch[0].to(device)
     image = raw_batch[0][0]
@@ -26,13 +29,18 @@ def main():
 
     encoder.eval()
     generator.eval()
-
+    print(data.size())
     encoded = encoder(data)
+    print(encoded.size())
     output = generator(encoded)
+    print(output.size())
     image_tensor = output[0].cpu()
     image = image_tensor.detach()
 
     generated_image = image_transform.denormalize(image)
+    print(entropy_manager.calculate_image_entropy(generated_image))
+    print(entropy_manager.calculate_image_entropy(original_image))
+    print(entropy_manager.plot_entropy_distribution(test_loader))
 
     _, grid = plt.subplots(1, 2)
     grid[0].imshow(original_image.permute(1, 2, 0))

@@ -82,7 +82,7 @@ generator_phases = {
 def generator_loss(
     epoch, fake_discriminator_output, real_label, generated_images, real_images,
 ):
-    if epoch < 10:
+    if epoch < 1:
         loss = generator_phases["initial"]
     else:
         loss = generator_phases["final"]

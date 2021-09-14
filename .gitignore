@@ -6,6 +6,8 @@ data
 help
 model*
 env
+cifar10
+flickr30
 
 env.sh
 install.sh

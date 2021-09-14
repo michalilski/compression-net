@@ -59,7 +59,7 @@ class Encoder(nn.Module):
         )
         self.l10 = nn.Sequential(
             nn.ZeroPad2d(2),
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=(5,5), stride=(1,1)),
+            nn.Conv2d(in_channels=64, out_channels=32, kernel_size=(5,5), stride=(1,1)),
             nn.Softmax2d()
         )
 
@@ -77,7 +77,7 @@ class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
         self.l1 = nn.Sequential(
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
+            nn.Conv2d(in_channels=32, out_channels=64, kernel_size=3, stride=1),
             nn.LeakyReLU(),
             nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=2, stride=2)
         )
@@ -144,7 +144,7 @@ class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
         self.l1 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=64, out_channels=32, kernel_size=3, stride=2),
+            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=3, stride=2),
             nn.LeakyReLU(negative_slope=0.2, inplace=True),
         )
         self.l2 = nn.Sequential(

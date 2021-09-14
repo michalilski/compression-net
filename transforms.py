@@ -25,6 +25,13 @@ class ImageTransform:
             ]
         )
 
+        self._to_grayscale = transforms.Compose(
+            [
+                transforms.Grayscale(num_output_channels=1),
+                transforms.Normalize(mean=[0.5], std=[0.5])
+            ]
+        )
+
     @property
     def transform(self):
         return self._img_transform
@@ -32,3 +39,7 @@ class ImageTransform:
     @property
     def denormalize(self):
         return self._img_denormalize
+
+    @property
+    def grayscale(self):
+        return self._to_grayscale
