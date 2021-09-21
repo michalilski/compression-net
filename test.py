@@ -38,9 +38,9 @@ def main():
     image = image_tensor.detach()
 
     generated_image = image_transform.denormalize(image)
-    print(entropy_manager.calculate_image_entropy(generated_image))
     print(entropy_manager.calculate_image_entropy(original_image))
-    print(entropy_manager.plot_entropy_distribution(test_loader))
+    print(entropy_manager.calculate_image_entropy(generated_image))
+    #print(entropy_manager.plot_entropy_distribution(test_loader))
 
     _, grid = plt.subplots(1, 2)
     grid[0].imshow(original_image.permute(1, 2, 0))

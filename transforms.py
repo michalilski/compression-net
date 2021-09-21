@@ -28,7 +28,6 @@ class ImageTransform:
         self._to_grayscale = transforms.Compose(
             [
                 transforms.Grayscale(num_output_channels=1),
-                transforms.Normalize(mean=[0.5], std=[0.5])
             ]
         )
 

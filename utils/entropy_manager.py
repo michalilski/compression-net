@@ -2,7 +2,7 @@ from transforms import ImageTransform
 from skimage.measure import shannon_entropy
 from torch import Tensor
 from typing import Dict, List
-from dataloader import ImageDataLoader
+from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 class EntropyManager:
@@ -11,7 +11,7 @@ class EntropyManager:
 
     def calculate_image_entropy(self, image: Tensor) -> Dict[str, float]:
         color_entropy = {
-            channel : shannon_entropy(value) 
+            channel : shannon_entropy(value.cpu().detach().numpy()) 
             for channel, value in zip(("r","g","b"), image)
         }
         color_entropy.update(
@@ -19,14 +19,14 @@ class EntropyManager:
         )
         return color_entropy
     
-    def plot_entropy_distribution(self, image_loader: ImageDataLoader):
-        entropies = self._calculate_dataset_entropy(image_loader)
+    def plot_entropy_distribution(self, image_loader: DataLoader):
+        entropies = self.calculate_dataset_entropy(image_loader)
         #TODO plot
 
     def _calculate_image_grayscale_entropy(self, image: Tensor) -> Dict[str, float]:
         return {"grayscale": shannon_entropy(self.image_transform.grayscale(image))}
     
-    def _calculate_dataset_entropy(self, image_loader: ImageDataLoader) -> List[Dict]:
+    def calculate_dataset_entropy(self, image_loader: DataLoader) -> List[Dict]:
         print("Calculating dataset entropies:")
         entropies = []
         for i, batch in enumerate(tqdm(image_loader)):
