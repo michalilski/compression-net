@@ -6,6 +6,7 @@ from typing import List
 import json
 from contextlib import contextmanager
 from traceback import format_exc
+from config import scan_filename
 
 @dataclass
 class ScanResult():
@@ -47,7 +48,7 @@ class DatasetScanner():
                 entropies=entropies,
                 average_entropies=self._average_entropies(entropies),
             )
-            with open("dataset_scan_results.json", "w+") as file:
+            with open(scan_filename, "w+") as file:
                 file.write(
                     json.dumps(scan_result, cls=ScanResultEncoder)
                 )
@@ -58,6 +59,8 @@ class DatasetScanner():
         for entropy in entropies:
             for key in keys:
                 total[key] += entropy[key]
+        for key in keys:
+            total[key] /= len(entropies)
         return total
 
     
