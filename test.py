@@ -2,18 +2,16 @@ from utils.entropy_manager import EntropyManager
 import matplotlib.pyplot as plt
 import torch
 
-from config import model_path
+from config import model_path, device
 from dataloader import ImageDataLoader
 from model import Encoder, Generator
 from transforms import ImageTransform
 
 
 def main():
-    device = "cuda"
     entropy_manager = EntropyManager()
 
     test_loader = ImageDataLoader().test_loader
-    train_loader = ImageDataLoader().train_loader
     image_transform = ImageTransform()
     iterator = iter(test_loader)
     raw_batch = iterator.next()
@@ -38,13 +36,16 @@ def main():
     image = image_tensor.detach()
 
     generated_image = image_transform.denormalize(image)
-    print(entropy_manager.calculate_image_entropy(original_image))
-    print(entropy_manager.calculate_image_entropy(generated_image))
-    #print(entropy_manager.plot_entropy_distribution(test_loader))
-
+    original_entropies = entropy_manager.calculate_image_entropy(original_image)
+    generated_entropies = entropy_manager.calculate_image_entropy(generated_image)
     _, grid = plt.subplots(1, 2)
     grid[0].imshow(original_image.permute(1, 2, 0))
+    grid[0].set_title("Real image")
+    grid[0].set_title("Real image")
+    grid[0].set_xlabel(entropy_manager.entropies_to_text(original_entropies))
     grid[1].imshow(generated_image.permute(1, 2, 0))
+    grid[1].set_title("Generated image")
+    grid[1].set_xlabel(entropy_manager.entropies_to_text(generated_entropies))
     plt.show()
 
 

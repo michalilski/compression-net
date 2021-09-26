@@ -1,6 +1,8 @@
+import torch
+
 # Data
-data_path = "kodak"
-model_path = "model-flickr/"
+data_path = "flickr30/archive/flickr30k_images"
+model_path = "model-flickr-tensorboard/"
 batch_size = 4
 image_size = 256
 channels = 3
@@ -14,7 +16,11 @@ std = (0.229, 0.224, 0.225)
 train_data_part = 0.1
 lr = 0.0002
 epochs = 5
+tensorboard_runs = "runs/compression-net"
 
 # Beta1 hyperparam for Adam optimizers
 beta1 = 0.5
+
+#hardware
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 

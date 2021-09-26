@@ -6,13 +6,13 @@ import torch.optim as optim
 import torch.utils.data
 from tqdm import tqdm
 
-from config import beta1, epochs, lr, model_path
+from config import beta1, epochs, lr, model_path, device
 from dataloader import ImageDataLoader
 from loss import discriminator_loss, encoder_loss, generator_loss
 from model import Discriminator, Encoder, Generator
+from utils.tensorboard_manager import TensorboardManager
 
 # hardware config
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 print(f"Training running on {device}")
 encoder = Encoder().to(device)
 generator = Generator().to(device)
@@ -46,6 +46,9 @@ discriminator_optimizer = optim.Adam(
 # training images loader
 dataloader = ImageDataLoader().train_loader
 
+#tensorboard
+tensorboard_manager = TensorboardManager()
+tensorboard_manager.present_models(encoder, generator, discriminator)
 
 # training
 for epoch in range(epochs):
@@ -114,6 +117,9 @@ for epoch in range(epochs):
 
         # status
         if i % 10 == 0:
+            tensorboard_manager.writer.add_scalar('Encoder Loss', encoder_error.item(), i)
+            tensorboard_manager.writer.add_scalar('Generator Loss', generated_error.item(), i)
+            tensorboard_manager.writer.add_scalar('Discriminator Loss', discriminator_error.item(), i)
             print(
                 "[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tLoss_E: %.4f\tD(x): %.4f\tD(G(z)): %.4f"
                 % (

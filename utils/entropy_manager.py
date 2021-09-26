@@ -18,10 +18,6 @@ class EntropyManager:
             self._calculate_image_grayscale_entropy(image)
         )
         return color_entropy
-    
-    def plot_entropy_distribution(self, image_loader: DataLoader):
-        entropies = self.calculate_dataset_entropy(image_loader)
-        #TODO plot
 
     def _calculate_image_grayscale_entropy(self, image: Tensor) -> Dict[str, float]:
         return {"grayscale": shannon_entropy(self.image_transform.grayscale(image))}
@@ -35,3 +31,12 @@ class EntropyManager:
                 for image in batch[0]
             ])
         return entropies
+    
+    def entropies_to_text(self, data: dict):
+        return """
+        Entropies
+        Red: {r}
+        Green: {g}
+        Blue: {b}
+        Grayscale: {grayscale}
+        """.format_map(data)

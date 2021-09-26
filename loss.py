@@ -1,8 +1,7 @@
 import torch
 from torch import nn
 from torchvision.models import vgg
-
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+from config import device
 
 
 class PerceptualLoss(torch.nn.Module):
