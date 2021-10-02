@@ -2,7 +2,7 @@ import torch
 
 # Data
 data_path = "flickr30/archive/flickr30k_images"
-model_path = "model-flickr-tensorboard/"
+model_path = "model-flickr/"
 batch_size = 4
 image_size = 256
 channels = 3

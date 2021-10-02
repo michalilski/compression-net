@@ -1,6 +1,7 @@
 from utils.entropy_manager import EntropyManager
 import matplotlib.pyplot as plt
 import torch
+from torchvision.transforms.functional import adjust_gamma, adjust_contrast, adjust_saturation
 
 from config import model_path, device
 from dataloader import ImageDataLoader
@@ -36,8 +37,11 @@ def main():
     image = image_tensor.detach()
 
     generated_image = image_transform.denormalize(image)
+    generated_image = adjust_gamma(generated_image, 1.3)
+    generated_image = adjust_contrast(generated_image, 1.3)
     original_entropies = entropy_manager.calculate_image_entropy(original_image)
     generated_entropies = entropy_manager.calculate_image_entropy(generated_image)
+
     _, grid = plt.subplots(1, 2)
     grid[0].imshow(original_image.permute(1, 2, 0))
     grid[0].set_title("Real image")
