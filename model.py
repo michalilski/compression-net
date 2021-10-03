@@ -83,7 +83,7 @@ class Generator(nn.Module):
         )
 
         self.l2 = nn.Sequential(
-            nn.ZeroPad2d(1),
+            nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1),
             nn.LeakyReLU(),
 
@@ -92,7 +92,7 @@ class Generator(nn.Module):
         )
 
         self.l3 = nn.Sequential(
-            nn.ZeroPad2d(1),
+            nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1),
             nn.LeakyReLU(),
 
@@ -101,7 +101,7 @@ class Generator(nn.Module):
         )
 
         self.l4 = nn.Sequential(
-            nn.ZeroPad2d(1),
+            nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=128, kernel_size=3, stride=1),
             nn.LeakyReLU(),
 
@@ -110,11 +110,11 @@ class Generator(nn.Module):
         )
 
         self.l5 = nn.Sequential(
-            nn.ZeroPad2d(1),
+            nn.ReflectionPad2d(1),
             nn.Conv2d(in_channels=128, out_channels=64, kernel_size=(3, 3), stride=(1, 1)),
             nn.LeakyReLU(),
 
-            nn.ZeroPad2d(2),
+            nn.ReflectionPad2d(2),
             nn.ConvTranspose2d(in_channels=64, out_channels=128, kernel_size=2, stride=2)
         )
 
