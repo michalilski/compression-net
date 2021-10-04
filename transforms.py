@@ -7,8 +7,7 @@ class ImageTransform:
     def __init__(self):
         self._img_transform = transforms.Compose(
             [
-                transforms.Resize(image_size),
-                transforms.CenterCrop(image_size),
+                transforms.CenterCrop((300, 400)),
                 transforms.ToTensor(),
                 transforms.Normalize(mean, std),
             ]

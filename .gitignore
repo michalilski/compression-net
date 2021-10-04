@@ -12,3 +12,6 @@ flickr30
 env.sh
 install.sh
 help.ipynb
+
+dataset_scan_results.json
+events.out*

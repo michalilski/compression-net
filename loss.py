@@ -73,7 +73,7 @@ def generator_final_loss(
 
 
 generator_phases = {
-    "initial": encoder_loss,
+    "initial": generator_final_loss,
     "final": generator_final_loss,
 }
 

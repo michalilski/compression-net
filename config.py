@@ -2,8 +2,8 @@ import torch
 
 # Data
 data_path = "flickr30/archive/flickr30k_images"
-model_path = "model-no-frame/"
-batch_size = 4
+model_path = "model-big-images/"
+batch_size = 3
 image_size = 256
 channels = 3
 scan_filename = "dataset_scan_results.json"

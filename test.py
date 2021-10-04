@@ -37,8 +37,8 @@ def main():
     image = image_tensor.detach()
 
     generated_image = image_transform.denormalize(image)
-    generated_image = adjust_gamma(generated_image, 1.3)
-    generated_image = adjust_contrast(generated_image, 1.3)
+    generated_image = adjust_saturation(generated_image, 1.2)
+    generated_image = adjust_contrast(generated_image, 1.1)
     original_entropies = entropy_manager.calculate_image_entropy(original_image)
     generated_entropies = entropy_manager.calculate_image_entropy(generated_image)
 
