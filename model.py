@@ -37,30 +37,28 @@ class Generator(nn.Module):
     def __init__(self):
         super(Generator, self).__init__()
         self.l1 = nn.Sequential(
+            nn.ReflectionPad2d(2),
             nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1),
             nn.LeakyReLU(),
         )
 
         self.post_l1 = nn.Sequential(
-            nn.ConvTranspose2d(in_channels=32, out_channels=64, kernel_size=4, stride=4),
-            nn.ReflectionPad2d(7),
+            nn.ConvTranspose2d(in_channels=32, out_channels=32, kernel_size=4, stride=4),
+            nn.ReflectionPad2d(2),
         )
 
         self.l2 = nn.Sequential(
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1),
             nn.LeakyReLU(),
         )
 
         self.l3 = nn.Sequential(
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(in_channels=64, out_channels=64, kernel_size=3, stride=1),
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1),
             nn.LeakyReLU(),
         )
 
         self.l4 = nn.Sequential(
-            nn.ReflectionPad2d(1),
-            nn.Conv2d(in_channels=64, out_channels=32, kernel_size=3, stride=1),
+            nn.Conv2d(in_channels=32, out_channels=32, kernel_size=3, stride=1),
             nn.LeakyReLU(),
         )
 
@@ -75,8 +73,8 @@ class Generator(nn.Module):
     def forward(self, x):
         x = self.l1(x)
         x = self.post_l1(x)
-        x = self.l2(x) + x
-        x = self.l3(x) + x
+        x = self.l2(x)
+        x = self.l3(x)
         x = self.l4(x)
         x = self.l5(x)
         return x

@@ -2,7 +2,7 @@ import torch
 
 # Data
 data_path = "flickr30/archive/flickr30k_images"
-model_path = "model-big-images/"
+model_path = "reflection-fix/"
 batch_size = 3
 image_size = 256
 channels = 3
@@ -19,7 +19,7 @@ epochs = 5
 tensorboard_runs = "runs/compression-net"
 
 # Beta1 hyperparam for Adam optimizers
-beta1 = 0.5
+beta1 = 0.9
 
 #hardware
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
