@@ -44,7 +44,7 @@ discriminator_optimizer = optim.Adam(
 
 
 # training images loader
-dataloader = ImageDataLoader().train_loader
+dataloader = ImageDataLoader().train_loader()
 
 #tensorboard
 tensorboard_manager = TensorboardManager()

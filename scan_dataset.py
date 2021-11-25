@@ -4,7 +4,7 @@ from dataloader import ImageDataLoader
 from utils.dataset_scanner import DatasetScanner
 
 def run():
-    image_loader = ImageDataLoader().test_loader
+    image_loader = ImageDataLoader().test_loader()
     DatasetScanner(image_loader).scan_dataset()
 
 if __name__ == "__main__":
