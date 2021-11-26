@@ -1,15 +1,15 @@
-from os import path
+import os
+from os import makedirs, path
 
 import numpy as np
-import torch
 import torch.optim as optim
 import torch.utils.data
 from tqdm import tqdm
 
-from config import beta1, epochs, lr, model_path, device
 from dataloader import ImageDataLoader
 from loss import discriminator_loss, encoder_loss, generator_loss
 from model import Discriminator, Encoder, Generator
+from settings import EPOCHS, MODEL_PATH, beta1, beta2, device, lr
 from utils.tensorboard_manager import TensorboardManager
 
 # hardware config
@@ -21,14 +21,14 @@ discriminator = Discriminator().to(device)
 
 # model loading
 if (
-    path.isfile(model_path + "encoder.pth")
-    and path.isfile(model_path + "generator.pth")
-    and path.isfile(model_path + "discriminator.pth")
+    path.isfile(MODEL_PATH + "encoder.pth")
+    and path.isfile(MODEL_PATH + "generator.pth")
+    and path.isfile(MODEL_PATH + "discriminator.pth")
 ):
     print("Loading models...")
-    encoder.load_state_dict(torch.load(model_path + "encoder.pth"))
-    generator.load_state_dict(torch.load(model_path + "generator.pth"))
-    discriminator.load_state_dict(torch.load(model_path + "discriminator.pth"))
+    encoder.load_state_dict(torch.load(MODEL_PATH + "encoder.pth"))
+    generator.load_state_dict(torch.load(MODEL_PATH + "generator.pth"))
+    discriminator.load_state_dict(torch.load(MODEL_PATH + "discriminator.pth"))
 
 encoder.train()
 generator.train()
@@ -36,22 +36,22 @@ discriminator.train()
 
 
 # optimizers
-encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr, betas=(beta1, 0.999))
-generator_optimizer = optim.Adam(generator.parameters(), lr=lr, betas=(beta1, 0.999))
+encoder_optimizer = optim.Adam(encoder.parameters(), lr=lr, betas=(beta1, beta2))
+generator_optimizer = optim.Adam(generator.parameters(), lr=lr, betas=(beta1, beta2))
 discriminator_optimizer = optim.Adam(
-    discriminator.parameters(), lr=lr, betas=(beta1, 0.999)
+    discriminator.parameters(), lr=lr, betas=(beta1, beta2)
 )
 
 
 # training images loader
 dataloader = ImageDataLoader().train_loader()
 
-#tensorboard
+# tensorboard
 tensorboard_manager = TensorboardManager()
 tensorboard_manager.present_models(encoder, generator, discriminator)
 
 # training
-for epoch in range(epochs):
+for epoch in range(EPOCHS):
     for i, data in enumerate(tqdm(dataloader)):
         images = data[0].to(device)
         encoded = encoder(images)
@@ -64,7 +64,7 @@ for epoch in range(epochs):
             device
         )
 
-        # discriminator training
+        # discriminator feedforward
         discriminator.zero_grad()
 
         real_input = {
@@ -93,13 +93,13 @@ for epoch in range(epochs):
 
         discriminator_error = r_discriminator_error + f_discriminator_error
 
-        # generator training
+        # generator feedforward
         generator.zero_grad()
         generated_error = generator_loss(
             epoch, f_discriminator_output, real_label, generated, images
         )
 
-        # encoder training
+        # encoder feedforward
         encoder.zero_grad()
         encoder_error = encoder_loss(
             f_discriminator_output, real_label, generated, images
@@ -116,28 +116,37 @@ for epoch in range(epochs):
         encoder_optimizer.step()
 
         # status
-        if i % 10 == 0:
-            tensorboard_manager.writer.add_scalar('Encoder Loss', encoder_error.item(), i)
-            tensorboard_manager.writer.add_scalar('Generator Loss', generated_error.item(), i)
-            tensorboard_manager.writer.add_scalar('Discriminator Loss', discriminator_error.item(), i)
+        if i % 100 == 0:
+            tensorboard_manager.writer.add_scalar(
+                "Encoder Loss", encoder_error.item(), i
+            )
+            tensorboard_manager.writer.add_scalar(
+                "Generator Loss", generated_error.item(), i
+            )
+            tensorboard_manager.writer.add_scalar(
+                "Discriminator Loss", discriminator_error.item(), i
+            )
             print(
-                "[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tLoss_E: %.4f\tD(x): %.4f\tD(G(z)): %.4f"
+                "[%d/%d][%d/%d]"
+                "\tDiscriminator Loss: %.4f"
+                "\tGenerator Loss: %.4f"
+                "\tEncoder Loss: %.4f"
                 % (
                     epoch + 1,
-                    epochs,
+                    EPOCHS,
                     i,
                     len(dataloader),
                     discriminator_error.item(),
                     generated_error.item(),
                     encoder_error.item(),
-                    Dx,
-                    DGz,
                 )
             )
 
         torch.cuda.empty_cache()
 
     print("Saving model...")
-    torch.save(encoder.state_dict(), model_path + "encoder.pth")
-    torch.save(generator.state_dict(), model_path + "generator.pth")
-    torch.save(discriminator.state_dict(), model_path + "discriminator.pth")
+    if not path.exists(MODEL_PATH):
+        makedirs(MODEL_PATH)
+    torch.save(encoder.state_dict(), MODEL_PATH + "encoder.pth")
+    torch.save(generator.state_dict(), MODEL_PATH + "generator.pth")
+    torch.save(discriminator.state_dict(), MODEL_PATH + "discriminator.pth")

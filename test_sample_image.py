@@ -1,14 +1,14 @@
-from utils.entropy_manager import EntropyManager
 import matplotlib.pyplot as plt
+import numpy as np
 import torch
+from PIL import Image
 from torchvision.transforms.functional import adjust_contrast, adjust_saturation
 
-from config import model_path, device
 from dataloader import ImageDataLoader
 from model import Encoder, Generator
+from settings import MODEL_PATH, device
 from transforms import ImageTransform
-from PIL import Image
-import numpy as np
+from utils.entropy_manager import EntropyManager
 
 path = "/home/mike/Downloads/sample.jpg"
 
@@ -20,7 +20,6 @@ def main():
     image_transform = ImageTransform()
     data = image_transform.transform(image)
 
-
     original_image = image_transform.denormalize(data)
 
     data = torch.tensor(np.expand_dims(data, axis=0))
@@ -29,8 +28,8 @@ def main():
     encoder = Encoder().to(device)
     generator = Generator().to(device)
 
-    encoder.load_state_dict(torch.load(model_path + "encoder.pth"))
-    generator.load_state_dict(torch.load(model_path + "generator.pth"))
+    encoder.load_state_dict(torch.load(MODEL_PATH + "encoder.pth"))
+    generator.load_state_dict(torch.load(MODEL_PATH + "generator.pth"))
 
     encoder.eval()
     generator.eval()

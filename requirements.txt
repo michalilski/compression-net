@@ -142,3 +142,11 @@ xz=5.2.5=h7b6447c_0
 zeromq=4.3.4=h2531618_0
 zlib=1.2.11=h7b6447c_3
 zstd=1.4.9=haebb681_0
+
+dataclasses~=0.8
+scikit-image~=0.18.1
+tqdm~=4.61.1
+torchvision~=0.10.0
+matplotlib~=3.3.4
+numpy~=1.20.1
+pillow~=8.3.1

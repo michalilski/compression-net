@@ -1,0 +1,21 @@
+import torch
+
+# Data
+DATA_PATH = "data/flickr30/archive"
+BATCH_SIZE = 3
+
+# Training
+MODEL_PATH = "models/refactor-test-run/"
+EPOCHS = 3
+TENSORBOARD_LOGS = "logs/latest-logs"
+ENTROPY_SCAN_FILE = "dataset-scans/dataset_scan_results.json"
+METRICS_FILE = "metrics/calculated_metrics.json"
+ENTROPY_SCAN_CHANNELS = ("r", "g", "b", "grayscale")
+
+# Adam optimizer
+lr = 0.0002
+beta1 = 0.9
+beta2 = 0.999
+
+# hardware
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")

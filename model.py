@@ -1,9 +1,7 @@
 import torch
 import torch.nn as nn
-from torch.nn.modules.activation import LeakyReLU
 from torch.nn.modules.padding import ReflectionPad2d
 
-ENCODER_OUTPUT_CHANNELS = 64
 
 class Encoder(nn.Module):
     def __init__(self):
@@ -32,6 +30,7 @@ class Encoder(nn.Module):
         x = self.l3(x)
         x = self.l4(x)
         return x
+
 
 class Generator(nn.Module):
     def __init__(self):
@@ -80,7 +79,6 @@ class Generator(nn.Module):
         return x
 
 
-# Discriminator Model
 class Discriminator(nn.Module):
     def __init__(self):
         super(Discriminator, self).__init__()
@@ -122,19 +120,18 @@ class Discriminator(nn.Module):
             nn.Linear(200,1),
             nn.Sigmoid(),
         )
-        
-        
+
     def forward(self, x):
         y = x['encoded'].to('cuda')
         y = self.l1(y)
         y = self.l2(y)
         y = self.l3(y)
         x = x['img'].to('cuda')
-        x = torch.cat((x,y),1)
+        x = torch.cat((x, y), 1)
         x = self.l6(x)
         x = self.l7(x)
 
-        x = x.reshape((x.shape[0],-1))
+        x = x.reshape((x.shape[0], -1))
         x = self.lin1(x)
         x = self.lin2(x)
         x = self.lin3(x)

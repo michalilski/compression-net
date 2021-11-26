@@ -1,17 +1,21 @@
 import dataclasses
-from utils.entropy_manager import EntropyManager
-from torch.utils.data import DataLoader
-from dataclasses import dataclass
-from typing import List
 import json
+import os.path
 from contextlib import contextmanager
+from dataclasses import dataclass
 from traceback import format_exc
-from config import scan_filename
+from typing import List
+
+from torch.utils.data import DataLoader
+
+from settings import ENTROPY_SCAN_FILE
+from utils.entropy_manager import EntropyManager
+
 
 @dataclass
-class ScanResult():
-    entropies: List[dict]
-    average_entropies: dict
+class ScanResult:
+    entropy: List[dict]
+    average_entropy: dict
 
 
 class ScanResultEncoder(json.JSONEncoder):
@@ -21,11 +25,11 @@ class ScanResultEncoder(json.JSONEncoder):
         return super().default(scan)
 
 
-class DatasetScanner():
+class DatasetScanner:
     def __init__(self, dataloader: DataLoader):
         self.entropy_manager = EntropyManager()
         self.dataloader = dataloader
-    
+
     @contextmanager
     def run_status(self):
         print("Dataset scan started...")
@@ -38,33 +42,24 @@ class DatasetScanner():
         else:
             print("Scan finished successfully!")
 
-
     def scan_dataset(self):
         with self.run_status():
-            entropies = self.entropy_manager.calculate_dataset_entropy(
-                self.dataloader
-            )
+            entropy = self.entropy_manager.calculate_dataset_entropy(self.dataloader)
             scan_result = ScanResult(
-                entropies=entropies,
-                average_entropies=self._average_entropies(entropies),
+                entropy=entropy,
+                average_entropy=self._average_entropy(entropy),
             )
-            with open(scan_filename, "w+") as file:
-                file.write(
-                    json.dumps(scan_result, cls=ScanResultEncoder)
-                )
-    
-    def _average_entropies(self, entropies: List[dict]) -> dict:
+            if not os.path.exists(os.path.dirname(ENTROPY_SCAN_FILE)):
+                os.makedirs(os.path.dirname(ENTROPY_SCAN_FILE))
+            with open(ENTROPY_SCAN_FILE, "w+") as file:
+                file.write(json.dumps(scan_result, cls=ScanResultEncoder))
+
+    def _average_entropy(self, entropy: List[dict]) -> dict:
         keys = ("r", "g", "b", "grayscale")
-        total = {key:0 for key in keys}
-        for entropy in entropies:
+        total = {key: 0 for key in keys}
+        for value in entropy:
             for key in keys:
-                total[key] += entropy[key]
+                total[key] += value[key]
         for key in keys:
-            total[key] /= len(entropies)
+            total[key] /= len(entropy)
         return total
-
-    
-
-
-
-    

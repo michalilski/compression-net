@@ -1,12 +1,13 @@
 import torch
 from torch import nn
 from torchvision.models import vgg
-from config import device
+
+from settings import device
 
 
-class PerceptualLoss(torch.nn.Module):
+class VGG16Model(torch.nn.Module):
     def __init__(self):
-        super(PerceptualLoss, self).__init__()
+        super(VGG16Model, self).__init__()
         self.model = vgg.vgg16(pretrained=True)
         self.model.to(device)
         self.model.eval()
@@ -19,39 +20,48 @@ class PerceptualLoss(torch.nn.Module):
                 return x
 
 
-perceptual_loss = PerceptualLoss()
+vgg_16_model = VGG16Model()
 bce_loss = nn.BCELoss()
 l1_loss = nn.L1Loss()
 mse_loss = nn.MSELoss()
 
 
 def discriminator_loss(
-    discriminator_output, label,
+    discriminator_output,
+    label,
 ):
     return bce_loss(discriminator_output, label)
 
 
 def encoder_loss(
-    fake_discriminator_output, real_label, generated_images, real_images,
+    fake_discriminator_output,
+    real_label,
+    generated_images,
+    real_images,
 ):
     return bce_loss(fake_discriminator_output, real_label) + 2 * l1_loss(
         generated_images, real_images
     )
 
 
-def generator_final_loss(
-    fake_discriminator_output, real_label, generated_images, real_images,
-):
-    kwargs = locals()
-
-    gen_features = perceptual_loss(generated_images)
-    raw_img_features = perceptual_loss(real_images)
+def perceptual_loss(generated_images, real_images):
+    gen_features = vgg_16_model(generated_images)
+    raw_img_features = vgg_16_model(real_images)
 
     with torch.no_grad():
         img_features = raw_img_features.detach()
 
-    vgg_loss = mse_loss(gen_features, img_features)
+    return mse_loss(gen_features, img_features)
 
+
+def generator_final_loss(
+    fake_discriminator_output,
+    real_label,
+    generated_images,
+    real_images,
+):
+    kwargs = locals()
+    vgg_loss = perceptual_loss(generated_images, real_images)
     reg_loss = (
         5
         * 1e-6
@@ -73,17 +83,26 @@ def generator_final_loss(
 
 
 generator_phases = {
-    "initial": generator_final_loss,
+    "initial": encoder_loss,
     "final": generator_final_loss,
 }
 
 
 def generator_loss(
-    epoch, fake_discriminator_output, real_label, generated_images, real_images,
+    epoch,
+    fake_discriminator_output,
+    real_label,
+    generated_images,
+    real_images,
 ):
     if epoch == 0:
         loss = generator_phases["initial"]
     else:
         loss = generator_phases["final"]
 
-    return loss(fake_discriminator_output, real_label, generated_images, real_images,)
+    return loss(
+        fake_discriminator_output,
+        real_label,
+        generated_images,
+        real_images,
+    )

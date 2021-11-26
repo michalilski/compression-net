@@ -1,16 +1,24 @@
-from torch.utils.tensorboard import SummaryWriter
-from config import tensorboard_runs, device
-from model import Encoder, Discriminator, Generator
-from dataloader import ImageDataLoader
+import os
+
 import torch
+from torch.utils.tensorboard import SummaryWriter
+
+from dataloader import ImageDataLoader
+from model import Discriminator, Encoder, Generator
+from settings import TENSORBOARD_LOGS, device
+
 
 class TensorboardManager:
-    writer = SummaryWriter(tensorboard_runs)
+    def __init__(self):
+        if not os.path.exists(TENSORBOARD_LOGS):
+            os.makedirs(TENSORBOARD_LOGS)
+
+        self.writer = SummaryWriter(TENSORBOARD_LOGS)
 
     def present_models(
         self,
-        encoder: Encoder, 
-        generator: Generator, 
+        encoder: Encoder,
+        generator: Generator,
         discriminator: Discriminator,
     ):
         with torch.no_grad():
@@ -18,10 +26,7 @@ class TensorboardManager:
             test_batch = next(iter(test_loader))[0].to(device)
             encoded = encoder(test_batch)
             decoded = generator(encoded)
-            discriminator_input = {
-                "encoded": encoded,
-                "img": decoded
-            }
+            discriminator_input = {"encoded": encoded, "img": decoded}
         self.writer.add_graph(encoder, test_batch)
-        #self.writer.add_graph(generator, encoded)
-        #self.writer.add_graph(discriminator, discriminator_input)
+        self.writer.add_graph(generator, encoded)
+        self.writer.add_graph(discriminator, discriminator_input)

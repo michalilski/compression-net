@@ -2,7 +2,7 @@ __pycache__
 .*
 !.gitignore
 
-data
+old-dataset
 help
 model*
 env
@@ -13,5 +13,5 @@ env.sh
 install.sh
 help.ipynb
 
-dataset_scan_results.json
+dataset-scans/dataset_scan_results.json
 events.out*
