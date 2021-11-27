@@ -1,4 +1,5 @@
-import os
+import logging
+import sys
 from os import makedirs, path
 
 import numpy as np
@@ -12,8 +13,11 @@ from model import Discriminator, Encoder, Generator
 from settings import EPOCHS, MODEL_PATH, beta1, beta2, device, lr
 from utils.tensorboard_manager import TensorboardManager
 
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 # hardware config
-print(f"Training running on {device}")
+logger.info(f"Training running on {device}")
 encoder = Encoder().to(device)
 generator = Generator().to(device)
 discriminator = Discriminator().to(device)
@@ -21,14 +25,16 @@ discriminator = Discriminator().to(device)
 
 # model loading
 if (
-    path.isfile(MODEL_PATH + "encoder.pth")
-    and path.isfile(MODEL_PATH + "generator.pth")
-    and path.isfile(MODEL_PATH + "discriminator.pth")
+    path.isfile(path.join(MODEL_PATH, "encoder.pth"))
+    and path.isfile(path.join(MODEL_PATH, "generator.pth"))
+    and path.isfile(path.join(MODEL_PATH, "discriminator.pth"))
 ):
-    print("Loading models...")
-    encoder.load_state_dict(torch.load(MODEL_PATH + "encoder.pth"))
-    generator.load_state_dict(torch.load(MODEL_PATH + "generator.pth"))
-    discriminator.load_state_dict(torch.load(MODEL_PATH + "discriminator.pth"))
+    logger.info("Loading models...")
+    encoder.load_state_dict(torch.load(path.join(MODEL_PATH, "encoder.pth")))
+    generator.load_state_dict(torch.load(path.join(MODEL_PATH, "generator.pth")))
+    discriminator.load_state_dict(
+        torch.load(path.join(MODEL_PATH, "discriminator.pth"))
+    )
 
 encoder.train()
 generator.train()
@@ -126,7 +132,7 @@ for epoch in range(EPOCHS):
             tensorboard_manager.writer.add_scalar(
                 "Discriminator Loss", discriminator_error.item(), i
             )
-            print(
+            logger.info(
                 "[%d/%d][%d/%d]"
                 "\tDiscriminator Loss: %.4f"
                 "\tGenerator Loss: %.4f"
@@ -144,9 +150,9 @@ for epoch in range(EPOCHS):
 
         torch.cuda.empty_cache()
 
-    print("Saving model...")
+    logger.info("Saving model...")
     if not path.exists(MODEL_PATH):
         makedirs(MODEL_PATH)
-    torch.save(encoder.state_dict(), MODEL_PATH + "encoder.pth")
-    torch.save(generator.state_dict(), MODEL_PATH + "generator.pth")
-    torch.save(discriminator.state_dict(), MODEL_PATH + "discriminator.pth")
+    torch.save(encoder.state_dict(), path.join(MODEL_PATH, "encoder.pth"))
+    torch.save(generator.state_dict(), path.join(MODEL_PATH, "generator.pth"))
+    torch.save(discriminator.state_dict(), path.join(MODEL_PATH, "discriminator.pth"))

@@ -3,9 +3,10 @@ import torch
 # Data
 DATA_PATH = "data/flickr30/archive"
 BATCH_SIZE = 3
+GENERATED_IMAGES_PATH = "generated/"
 
 # Training
-MODEL_PATH = "models/refactor-test-run/"
+MODEL_PATH = "models/refactor-test-run-2/"
 EPOCHS = 3
 TENSORBOARD_LOGS = "logs/latest-logs"
 ENTROPY_SCAN_FILE = "dataset-scans/dataset_scan_results.json"

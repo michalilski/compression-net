@@ -1,3 +1,5 @@
+import logging
+import sys
 from typing import Dict, List
 
 from skimage.measure import shannon_entropy
@@ -6,6 +8,9 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 
 from transforms import ImageTransform
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class EntropyManager:
@@ -24,7 +29,7 @@ class EntropyManager:
         return {"grayscale": shannon_entropy(self.image_transform.grayscale(image))}
 
     def calculate_dataset_entropy(self, image_loader: DataLoader) -> List[Dict]:
-        print("Calculating dataset entropy:")
+        logger.info("Calculating dataset entropy:")
         entropy = []
         for _, batch in enumerate(tqdm(image_loader)):
             entropy.extend([self.calculate_image_entropy(image) for image in batch[0]])

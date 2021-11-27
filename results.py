@@ -1,13 +1,30 @@
 import argparse
 import json
 import os
+from datetime import datetime
 
 import matplotlib.pyplot as plt
+import numpy as np
+import torch
+from PIL import Image
+from torchvision.transforms import ToPILImage
+from torchvision.transforms.functional import adjust_contrast, adjust_saturation
 
 from dataloader import ImageDataLoader
-from settings import ENTROPY_SCAN_CHANNELS, ENTROPY_SCAN_FILE, METRICS_FILE
+from model import Encoder, Generator
+from settings import (
+    ENTROPY_SCAN_CHANNELS,
+    ENTROPY_SCAN_FILE,
+    GENERATED_IMAGES_PATH,
+    METRICS_FILE,
+    MODEL_PATH,
+    device,
+)
+from transforms import ImageTransform
 from utils.dataset_scanner import DatasetScanner
 from utils.metrics_manager import Metrics, MetricsManager
+
+TESTED_FILE_PATH = ""
 
 
 def train_set_entropy():
@@ -58,10 +75,10 @@ def show_metrics():
     }
     metrics = ("mse_loss", "perceptual_loss", "ssim_value")
 
-    fig, ax = plt.subplots(nrows=4, ncols=3)
+    fig, ax = plt.subplots(nrows=3, ncols=4)
     fig.suptitle("Test set metrics")
-    for row_idx, key in enumerate(ENTROPY_SCAN_CHANNELS):
-        for col_idx, metric_value in enumerate(metrics):
+    for col_idx, key in enumerate(ENTROPY_SCAN_CHANNELS):
+        for row_idx, metric_value in enumerate(metrics):
             ax[row_idx, col_idx].plot(
                 [x.entropy[key] for x in sorted_results[key]],
                 [getattr(x, metric_value) for x in sorted_results[key]],
@@ -72,17 +89,81 @@ def show_metrics():
     plt.show()
 
 
+def present_visual_effect(source_image, normalized_image, image_transform):
+    encoder = Encoder().to(device)
+    generator = Generator().to(device)
+
+    encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth")))
+    generator.load_state_dict(torch.load(os.path.join(MODEL_PATH, "generator.pth")))
+
+    normalized_image = torch.tensor(np.expand_dims(normalized_image, axis=0))
+    normalized_image = normalized_image.to(device)
+
+    encoder.eval()
+    generator.eval()
+    encoded = encoder(normalized_image)
+    output = generator(encoded)
+    image_tensor = output[0].cpu()
+    output = image_tensor.detach()
+
+    generated_image = image_transform.denormalize(output)
+    generated_image = adjust_saturation(generated_image, 1.2)
+    generated_image = adjust_contrast(generated_image, 1.1)
+
+    filename = f"generated-{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    if not os.path.exists(GENERATED_IMAGES_PATH):
+        os.mkdir(GENERATED_IMAGES_PATH)
+
+    im = ToPILImage()(generated_image)
+    im.save(os.path.join(GENERATED_IMAGES_PATH, filename), "PNG")
+
+    _, grid = plt.subplots(1, 2)
+    grid[0].imshow(source_image)
+    grid[0].set_title("Real image")
+
+    grid[1].imshow(generated_image.permute(1, 2, 0))
+    grid[1].set_title("Generated image")
+
+    plt.show()
+
+
+def visual_test():
+    image_transform = ImageTransform()
+    if TESTED_FILE_PATH:
+        if not os.path.exists(TESTED_FILE_PATH):
+            raise FileNotFoundError(TESTED_FILE_PATH)
+        image = Image.open(TESTED_FILE_PATH)
+        normalized_image = image_transform.transform(image)
+        image = image_transform.denormalize(normalized_image).cpu().permute(1, 2, 0)
+        return present_visual_effect(image, normalized_image, image_transform)
+
+    test_loader = ImageDataLoader().test_loader()
+    iterator = iter(test_loader)
+    raw_batch = iterator.next()
+    normalized_image = raw_batch[0][0]
+    image = normalized_image.cpu().permute(1, 2, 0)
+    return present_visual_effect(image, normalized_image, image_transform)
+
+
 actions = {
     "train-set-entropy": train_set_entropy,
     "test-set-metrics": show_metrics,
+    "visual-test": visual_test,
 }
 
 
 def main():
+    global TESTED_FILE_PATH
     parser = argparse.ArgumentParser(description="Compression net results.")
-    parser.add_argument("command", choices=actions.keys())
+    parser.add_argument(
+        "command", choices=actions.keys(), help="Possible commands to run."
+    )
+    parser.add_argument(
+        "path", nargs="?", action="store", type=str, help="Image path for visual test."
+    )
     args = parser.parse_args()
     cmd = actions[args.command]
+    TESTED_FILE_PATH = args.path
     cmd()
 
 

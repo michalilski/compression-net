@@ -1,15 +1,19 @@
 import dataclasses
 import json
+import logging
 import os.path
+import sys
 from contextlib import contextmanager
 from dataclasses import dataclass
-from traceback import format_exc
 from typing import List
 
 from torch.utils.data import DataLoader
 
 from settings import ENTROPY_SCAN_FILE
 from utils.entropy_manager import EntropyManager
+
+logging.basicConfig(stream=sys.stdout, level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -32,22 +36,19 @@ class DatasetScanner:
 
     @contextmanager
     def run_status(self):
-        print("Dataset scan started...")
+        logger.info("Dataset scan started...")
         try:
             yield
         except Exception as err:
-            print("Scan failed!")
-            print(format_exc())
-            print(f"[Scanner Error] {err}")
+            logger.error(f"[Scanner Error] {err}")
         else:
-            print("Scan finished successfully!")
+            logger.info("Scan finished successfully!")
 
     def scan_dataset(self):
         with self.run_status():
             entropy = self.entropy_manager.calculate_dataset_entropy(self.dataloader)
             scan_result = ScanResult(
-                entropy=entropy,
-                average_entropy=self._average_entropy(entropy),
+                entropy=entropy, average_entropy=self._average_entropy(entropy),
             )
             if not os.path.exists(os.path.dirname(ENTROPY_SCAN_FILE)):
                 os.makedirs(os.path.dirname(ENTROPY_SCAN_FILE))
