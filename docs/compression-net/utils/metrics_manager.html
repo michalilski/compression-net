@@ -1,0 +1,176 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<html><head><title>Python: module metrics_manager</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head><body bgcolor="#f0f0f8">
+
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="heading">
+<tr bgcolor="#7799ee">
+<td valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>metrics_manager</strong></big></big></font></td
+><td align=right valign=bottom
+><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/mike/repos/compression-net/utils/metrics_manager.py">/home/mike/repos/compression-net/utils/metrics_manager.py</a></font></td></tr></table>
+    <p></p>
+<p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#aa55cc">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Modules</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#aa55cc"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><table width="100%" summary="list"><tr><td width="25%" valign=top><a href="json.html">json</a><br>
+</td><td width="25%" valign=top><a href="os.html">os</a><br>
+</td><td width="25%" valign=top><a href="torch.html">torch</a><br>
+</td><td width="25%" valign=top></td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ee77aa">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Classes</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#ee77aa"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><dl>
+<dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
+</font></dt><dd>
+<dl>
+<dt><font face="helvetica, arial"><a href="metrics_manager.html#Metrics">Metrics</a>
+</font></dt><dt><font face="helvetica, arial"><a href="metrics_manager.html#MetricsManager">MetricsManager</a>
+</font></dt></dl>
+</dd>
+</dl>
+ <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Metrics">class <strong>Metrics</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float)&nbsp;-&amp;gt;&nbsp;None<br>
+&nbsp;<br>
+<a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float)<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Metrics-__eq__"><strong>__eq__</strong></a>(self, other)</dt></dl>
+
+<dl><dt><a name="Metrics-__init__"><strong>__init__</strong></a>(self, entropy: dict, mse_loss: float, perceptual_loss: float, ssim_value: float) -&gt; None</dt></dl>
+
+<dl><dt><a name="Metrics-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>__annotations__</strong> = {'entropy': &lt;class 'dict'&gt;, 'mse_loss': &lt;class 'float'&gt;, 'perceptual_loss': &lt;class 'float'&gt;, 'ssim_value': &lt;class 'float'&gt;}</dl>
+
+<dl><dt><strong>__dataclass_fields__</strong> = {'entropy': Field(name='entropy',type=&lt;class 'dict'&gt;,default...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'mse_loss': Field(name='mse_loss',type=&lt;class 'float'&gt;,defau...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'perceptual_loss': Field(name='perceptual_loss',type=&lt;class 'float'...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'ssim_value': Field(name='ssim_value',type=&lt;class 'float'&gt;,def...rue,metadata=mappingproxy({}),_field_type=_FIELD)}</dl>
+
+<dl><dt><strong>__dataclass_params__</strong> = _DataclassParams(init=True,repr=True,eq=True,order=False,unsafe_hash=False,frozen=False)</dl>
+
+<dl><dt><strong>__hash__</strong> = None</dl>
+
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="MetricsManager">class <strong>MetricsManager</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#MetricsManager">MetricsManager</a>(dataloader:&nbsp;torch.utils.data.dataloader.DataLoader)<br>
+&nbsp;<br>
+Manager&nbsp;for&nbsp;metrics&nbsp;calculation.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="MetricsManager-__init__"><strong>__init__</strong></a>(self, dataloader: torch.utils.data.dataloader.DataLoader)</dt><dd><tt>Initialize&nbsp;self.&nbsp;&nbsp;See&nbsp;help(type(self))&nbsp;for&nbsp;accurate&nbsp;signature.</tt></dd></dl>
+
+<dl><dt><a name="MetricsManager-results_to_file"><strong>results_to_file</strong></a>(self, metrics: list)</dt><dd><tt>Function&nbsp;saving&nbsp;calculated&nbsp;metrics&nbsp;results&nbsp;to&nbsp;METRIC_FILE&nbsp;directory.</tt></dd></dl>
+
+<dl><dt><a name="MetricsManager-run"><strong>run</strong></a>(self)</dt><dd><tt>Function&nbsp;running&nbsp;metrics&nbsp;calculation&nbsp;process.<br>
+&nbsp;<br>
+MSE,&nbsp;Perceptual&nbsp;Loss&nbsp;and&nbsp;SSIM&nbsp;are&nbsp;calculated&nbsp;on&nbsp;data<br>
+from&nbsp;given&nbsp;dataloader.</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<hr>
+Data and other attributes defined here:<br>
+<dl><dt><strong>entropy_manager</strong> = &lt;utils.entropy_manager.EntropyManager object&gt;</dl>
+
+<dl><dt><strong>log_size</strong> = 50</dl>
+
+<dl><dt><strong>mse</strong> = MSELoss()<dd><tt>Creates&nbsp;a&nbsp;criterion&nbsp;that&nbsp;measures&nbsp;the&nbsp;mean&nbsp;squared&nbsp;error&nbsp;(squared&nbsp;L2&nbsp;norm)&nbsp;between<br>
+each&nbsp;element&nbsp;in&nbsp;the&nbsp;input&nbsp;:math:`x`&nbsp;and&nbsp;target&nbsp;:math:`y`.<br>
+&nbsp;<br>
+The&nbsp;unreduced&nbsp;(i.e.&nbsp;with&nbsp;:attr:`reduction`&nbsp;set&nbsp;to&nbsp;``'none'``)&nbsp;loss&nbsp;can&nbsp;be&nbsp;described&nbsp;as:<br>
+&nbsp;<br>
+..&nbsp;math::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\ell(x,&nbsp;y)&nbsp;=&nbsp;L&nbsp;=&nbsp;\{l_1,\dots,l_N\}^\top,&nbsp;\quad<br>
+&nbsp;&nbsp;&nbsp;&nbsp;l_n&nbsp;=&nbsp;\left(&nbsp;x_n&nbsp;-&nbsp;y_n&nbsp;\right)^2,<br>
+&nbsp;<br>
+where&nbsp;:math:`N`&nbsp;is&nbsp;the&nbsp;batch&nbsp;size.&nbsp;If&nbsp;:attr:`reduction`&nbsp;is&nbsp;not&nbsp;``'none'``<br>
+(default&nbsp;``'mean'``),&nbsp;then:<br>
+&nbsp;<br>
+..&nbsp;math::<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\ell(x,&nbsp;y)&nbsp;=<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\begin{cases}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\operatorname{mean}(L),&nbsp;&amp;&nbsp;&nbsp;\text{if&nbsp;reduction}&nbsp;=&nbsp;\text{`mean';}\\<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\operatorname{sum}(L),&nbsp;&nbsp;&amp;&nbsp;&nbsp;\text{if&nbsp;reduction}&nbsp;=&nbsp;\text{`sum'.}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;\end{cases}<br>
+&nbsp;<br>
+:math:`x`&nbsp;and&nbsp;:math:`y`&nbsp;are&nbsp;tensors&nbsp;of&nbsp;arbitrary&nbsp;shapes&nbsp;with&nbsp;a&nbsp;total<br>
+of&nbsp;:math:`n`&nbsp;elements&nbsp;each.<br>
+&nbsp;<br>
+The&nbsp;mean&nbsp;operation&nbsp;still&nbsp;operates&nbsp;over&nbsp;all&nbsp;the&nbsp;elements,&nbsp;and&nbsp;divides&nbsp;by&nbsp;:math:`n`.<br>
+&nbsp;<br>
+The&nbsp;division&nbsp;by&nbsp;:math:`n`&nbsp;can&nbsp;be&nbsp;avoided&nbsp;if&nbsp;one&nbsp;sets&nbsp;``reduction&nbsp;=&nbsp;'sum'``.<br>
+&nbsp;<br>
+Args:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;size_average&nbsp;(bool,&nbsp;optional):&nbsp;Deprecated&nbsp;(see&nbsp;:attr:`reduction`).&nbsp;By&nbsp;default,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;the&nbsp;losses&nbsp;are&nbsp;averaged&nbsp;over&nbsp;each&nbsp;loss&nbsp;element&nbsp;in&nbsp;the&nbsp;batch.&nbsp;Note&nbsp;that&nbsp;for<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;some&nbsp;losses,&nbsp;there&nbsp;are&nbsp;multiple&nbsp;elements&nbsp;per&nbsp;sample.&nbsp;If&nbsp;the&nbsp;field&nbsp;:attr:`size_average`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;set&nbsp;to&nbsp;``False``,&nbsp;the&nbsp;losses&nbsp;are&nbsp;instead&nbsp;summed&nbsp;for&nbsp;each&nbsp;minibatch.&nbsp;Ignored<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;when&nbsp;:attr:`reduce`&nbsp;is&nbsp;``False``.&nbsp;Default:&nbsp;``True``<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reduce&nbsp;(bool,&nbsp;optional):&nbsp;Deprecated&nbsp;(see&nbsp;:attr:`reduction`).&nbsp;By&nbsp;default,&nbsp;the<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;losses&nbsp;are&nbsp;averaged&nbsp;or&nbsp;summed&nbsp;over&nbsp;observations&nbsp;for&nbsp;each&nbsp;minibatch&nbsp;depending<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;on&nbsp;:attr:`size_average`.&nbsp;When&nbsp;:attr:`reduce`&nbsp;is&nbsp;``False``,&nbsp;returns&nbsp;a&nbsp;loss&nbsp;per<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;batch&nbsp;element&nbsp;instead&nbsp;and&nbsp;ignores&nbsp;:attr:`size_average`.&nbsp;Default:&nbsp;``True``<br>
+&nbsp;&nbsp;&nbsp;&nbsp;reduction&nbsp;(string,&nbsp;optional):&nbsp;Specifies&nbsp;the&nbsp;reduction&nbsp;to&nbsp;apply&nbsp;to&nbsp;the&nbsp;output:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``'none'``&nbsp;|&nbsp;``'mean'``&nbsp;|&nbsp;``'sum'``.&nbsp;``'none'``:&nbsp;no&nbsp;reduction&nbsp;will&nbsp;be&nbsp;applied,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;``'mean'``:&nbsp;the&nbsp;sum&nbsp;of&nbsp;the&nbsp;output&nbsp;will&nbsp;be&nbsp;divided&nbsp;by&nbsp;the&nbsp;number&nbsp;of<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;elements&nbsp;in&nbsp;the&nbsp;output,&nbsp;``'sum'``:&nbsp;the&nbsp;output&nbsp;will&nbsp;be&nbsp;summed.&nbsp;Note:&nbsp;:attr:`size_average`<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;:attr:`reduce`&nbsp;are&nbsp;in&nbsp;the&nbsp;process&nbsp;of&nbsp;being&nbsp;deprecated,&nbsp;and&nbsp;in&nbsp;the&nbsp;meantime,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;specifying&nbsp;either&nbsp;of&nbsp;those&nbsp;two&nbsp;args&nbsp;will&nbsp;override&nbsp;:attr:`reduction`.&nbsp;Default:&nbsp;``'mean'``<br>
+&nbsp;<br>
+Shape:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Input:&nbsp;:math:`(N,&nbsp;*)`&nbsp;where&nbsp;:math:`*`&nbsp;means,&nbsp;any&nbsp;number&nbsp;of&nbsp;additional<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dimensions<br>
+&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Target:&nbsp;:math:`(N,&nbsp;*)`,&nbsp;same&nbsp;shape&nbsp;as&nbsp;the&nbsp;input<br>
+&nbsp;<br>
+Examples::<br>
+&nbsp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;loss&nbsp;=&nbsp;nn.MSELoss()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;input&nbsp;=&nbsp;torch.randn(3,&nbsp;5,&nbsp;requires_grad=True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;target&nbsp;=&nbsp;torch.randn(3,&nbsp;5)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;output&nbsp;=&nbsp;loss(input,&nbsp;target)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&gt;&gt;&gt;&nbsp;output.backward()</tt></dl>
+
+</td></tr></table></td></tr></table><p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#55aa55">
+<td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#ffffff" face="helvetica, arial"><big><strong>Data</strong></big></font></td></tr>
+    
+<tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
+<td width="100%"><strong>METRICS_FILE</strong> = 'metrics/calculated_metrics.json'<br>
+<strong>MODEL_PATH</strong> = 'models/refactor-test-run-2/'<br>
+<strong>device</strong> = device(type='cpu')</td></tr></table>
+</body></html>

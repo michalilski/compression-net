@@ -28,6 +28,10 @@ TESTED_FILE_PATH = ""
 
 
 def train_set_entropy():
+    """
+    Function presenting entropy for red, green, blue channels and gray
+    scale. Function presents entropy from training part of data set.
+    """
     if not os.path.exists(ENTROPY_SCAN_FILE):
         DatasetScanner(ImageDataLoader().train_loader()).scan_dataset()
 
@@ -60,6 +64,10 @@ def train_set_entropy():
 
 
 def show_metrics():
+    """
+    Function presenting MSE, Perceptual loss and SSIM metrics
+    calculated on test part of data set.
+    """
     if not os.path.exists(METRICS_FILE):
         MetricsManager(ImageDataLoader().test_loader(test_batch=1)).run()
 
@@ -90,6 +98,14 @@ def show_metrics():
 
 
 def present_visual_effect(source_image, normalized_image, image_transform):
+    """
+    Function presenting visual effects of compression. Original and
+    generated images are presented.
+
+    :param source_image: tensor representation of real image
+    :param normalized_image: normalized version of real image
+    :param image_transform: transforms manager for data set
+    """
     encoder = Encoder().to(device)
     generator = Generator().to(device)
 
@@ -128,6 +144,10 @@ def present_visual_effect(source_image, normalized_image, image_transform):
 
 
 def visual_test():
+    """
+    Function presenting visual effects for specified image or
+    random image from test set.
+    """
     image_transform = ImageTransform()
     if TESTED_FILE_PATH:
         if not os.path.exists(TESTED_FILE_PATH):
@@ -153,6 +173,10 @@ actions = {
 
 
 def main():
+    """
+    Function parsing arguments for current program and calling chosen
+    command - train-set-entropy, test-set-metrics or visual-test.
+    """
     global TESTED_FILE_PATH
     parser = argparse.ArgumentParser(description="Compression net results.")
     parser.add_argument(

@@ -14,10 +14,20 @@ logger = logging.getLogger(__name__)
 
 
 class EntropyManager:
+    """
+    Manager for entropy calculation.
+    """
     def __init__(self) -> None:
         self.image_transform = ImageTransform()
 
     def calculate_image_entropy(self, image: Tensor) -> Dict[str, float]:
+        """
+        Function calculating entropy for one image.
+
+        :param image: Tensor representing image
+        :return: dictionary with calculated entropy for red, green, blue
+        channels and grayscale
+        """
         color_entropy = {
             channel: shannon_entropy(value.cpu().detach().numpy())
             for channel, value in zip(("r", "g", "b"), image)
@@ -29,6 +39,13 @@ class EntropyManager:
         return {"grayscale": shannon_entropy(self.image_transform.grayscale(image))}
 
     def calculate_dataset_entropy(self, image_loader: DataLoader) -> List[Dict]:
+        """
+        Function calculating entropy for given dataset.
+
+        :param image_loader: DataLoader for given data set
+        :return: list of dictionaries containing entropy values for each image
+        from data set
+        """
         logger.info("Calculating dataset entropy:")
         entropy = []
         for _, batch in enumerate(tqdm(image_loader)):
@@ -36,6 +53,9 @@ class EntropyManager:
         return entropy
 
     def entropy_to_text(self, data: dict):
+        """
+        Function returning entropy values as string.
+        """
         return """
         Entropy
         Red: {r}

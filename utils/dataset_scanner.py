@@ -12,6 +12,7 @@ from torch.utils.data import DataLoader
 from settings import ENTROPY_SCAN_FILE
 from utils.entropy_manager import EntropyManager
 
+
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -23,19 +24,37 @@ class ScanResult:
 
 
 class ScanResultEncoder(json.JSONEncoder):
+    """
+    JSON encoder wrapper class for scan results.
+    """
     def default(self, scan):
+        """
+        Encoding function
+
+        :param scan: ScanResult to encode
+        :return: dict with ScanResult data
+        """
         if dataclasses.is_dataclass(scan):
             return dataclasses.asdict(scan)
         return super().default(scan)
 
 
 class DatasetScanner:
+    """
+    Scanner class used to process data set.
+
+    Scanner calculates entropy of given data and
+    exports results to file.
+    """
     def __init__(self, dataloader: DataLoader):
         self.entropy_manager = EntropyManager()
         self.dataloader = dataloader
 
     @contextmanager
     def run_status(self):
+        """
+        Scanner run context manager.
+        """
         logger.info("Dataset scan started...")
         try:
             yield
@@ -45,6 +64,10 @@ class DatasetScanner:
             logger.info("Scan finished successfully!")
 
     def scan_dataset(self):
+        """
+        Function running scanning process. Results are saved
+        in ENTROPY_SCAN_FILE directory.
+        """
         with self.run_status():
             entropy = self.entropy_manager.calculate_dataset_entropy(self.dataloader)
             scan_result = ScanResult(

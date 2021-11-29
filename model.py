@@ -4,6 +4,9 @@ from torch.nn.modules.padding import ReflectionPad2d
 
 
 class Encoder(nn.Module):
+    """
+    Encoder model
+    """
     def __init__(self):
         super(Encoder, self).__init__()
         self.l1 = nn.Sequential(
@@ -25,6 +28,12 @@ class Encoder(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Function feedforwarding data for encoder model
+
+        :param x: input data
+        :return: encoder result
+        """
         x = self.l1(x)
         x = self.l2(x)
         x = self.l3(x)
@@ -33,6 +42,9 @@ class Encoder(nn.Module):
 
 
 class Generator(nn.Module):
+    """
+    Generator model
+    """
     def __init__(self):
         super(Generator, self).__init__()
         self.l1 = nn.Sequential(
@@ -70,6 +82,12 @@ class Generator(nn.Module):
         )
         
     def forward(self, x):
+        """
+        Function feedforwarding data for generator model
+
+        :param x: input data
+        :return: generator result
+        """
         x = self.l1(x)
         x = self.post_l1(x)
         x = self.l2(x)
@@ -80,6 +98,9 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
+    """
+    Discriminator model
+    """
     def __init__(self):
         super(Discriminator, self).__init__()
         self.l1 = nn.Sequential(
@@ -122,6 +143,12 @@ class Discriminator(nn.Module):
         )
 
     def forward(self, x):
+        """
+        Function feedforwarding data for discriminator model
+
+        :param x: input data, tuple of encoded part and image tensor
+        :return: discriminator result
+        """
         y = x['encoded'].to('cuda')
         y = self.l1(y)
         y = self.l2(y)

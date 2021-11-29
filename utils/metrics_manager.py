@@ -23,6 +23,9 @@ class Metrics:
 
 
 class MetricsManager:
+    """
+    Manager for metrics calculation.
+    """
     mse = MSELoss()
     entropy_manager = EntropyManager()
     log_size = 50
@@ -31,6 +34,9 @@ class MetricsManager:
         self.dataloader = dataloader
 
     def results_to_file(self, metrics: list):
+        """
+        Function saving calculated metrics results to METRIC_FILE directory.
+        """
         json_metrics = [asdict(metric) for metric in metrics]
         if not os.path.exists(os.path.dirname(METRICS_FILE)):
             os.makedirs(os.path.dirname(METRICS_FILE))
@@ -38,6 +44,12 @@ class MetricsManager:
             file.write(json.dumps(json_metrics))
 
     def run(self):
+        """
+        Function running metrics calculation process.
+
+        MSE, Perceptual Loss and SSIM are calculated on data
+        from given dataloader.
+        """
         encoder = Encoder().to(device)
         generator = Generator().to(device)
         encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth")))

@@ -9,6 +9,9 @@ from settings import TENSORBOARD_LOGS, device
 
 
 class TensorboardManager:
+    """
+    Manager for TensorBoard results
+    """
     def __init__(self):
         if not os.path.exists(TENSORBOARD_LOGS):
             os.makedirs(TENSORBOARD_LOGS)
@@ -19,14 +22,20 @@ class TensorboardManager:
         self,
         encoder: Encoder,
         generator: Generator,
-        discriminator: Discriminator,
+        to_present: str = "encoder",
     ):
+        """
+        Function presenting models architectures in tensorboard
+
+        :param encoder: encoder model
+        :param generator: generator model
+        :param to_present: define which model to present
+        """
         with torch.no_grad():
             test_loader = ImageDataLoader().test_loader()
             test_batch = next(iter(test_loader))[0].to(device)
             encoded = encoder(test_batch)
-            decoded = generator(encoded)
-            discriminator_input = {"encoded": encoded, "img": decoded}
-        self.writer.add_graph(encoder, test_batch)
-        self.writer.add_graph(generator, encoded)
-        self.writer.add_graph(discriminator, discriminator_input)
+        if to_present == "encoder":
+            self.writer.add_graph(encoder, test_batch)
+        else:
+            self.writer.add_graph(generator, encoded)
