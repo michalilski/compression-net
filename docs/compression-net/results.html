@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>results</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/mike/repos/compression-net/results.py">/home/mike/repos/compression-net/results.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href="../..">index</a><br><a href="file:/home/mike/repos/compression-net/results.py">/home/mike/repos/compression-net/results.py</a></font></td></tr></table>
     <p></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -39,8 +39,8 @@ generated&nbsp;images&nbsp;are&nbsp;presented.<br>
 :param&nbsp;source_image:&nbsp;tensor&nbsp;representation&nbsp;of&nbsp;real&nbsp;image<br>
 :param&nbsp;normalized_image:&nbsp;normalized&nbsp;version&nbsp;of&nbsp;real&nbsp;image<br>
 :param&nbsp;image_transform:&nbsp;transforms&nbsp;manager&nbsp;for&nbsp;data&nbsp;set</tt></dd></dl>
- <dl><dt><a name="-show_metrics"><strong>show_metrics</strong></a>()</dt><dd><tt>Function&nbsp;presenting&nbsp;MSE,&nbsp;Perceptual&nbsp;loss&nbsp;and&nbsp;SSIM&nbsp;metrics<br>
-calculated&nbsp;on&nbsp;test&nbsp;part&nbsp;of&nbsp;data&nbsp;set.</tt></dd></dl>
+ <dl><dt><a name="-show_metrics"><strong>show_metrics</strong></a>()</dt><dd><tt>Function&nbsp;presenting&nbsp;MSE,&nbsp;Perceptual&nbsp;loss,&nbsp;SSIM,&nbsp;MS-SSIM<br>
+and&nbsp;PSNR&nbsp;metrics&nbsp;calculated&nbsp;on&nbsp;test&nbsp;part&nbsp;of&nbsp;data&nbsp;set.</tt></dd></dl>
  <dl><dt><a name="-train_set_entropy"><strong>train_set_entropy</strong></a>()</dt><dd><tt>Function&nbsp;presenting&nbsp;entropy&nbsp;for&nbsp;red,&nbsp;green,&nbsp;blue&nbsp;channels&nbsp;and&nbsp;gray<br>
 scale.&nbsp;Function&nbsp;presents&nbsp;entropy&nbsp;from&nbsp;training&nbsp;part&nbsp;of&nbsp;data&nbsp;set.</tt></dd></dl>
  <dl><dt><a name="-visual_test"><strong>visual_test</strong></a>()</dt><dd><tt>Function&nbsp;presenting&nbsp;visual&nbsp;effects&nbsp;for&nbsp;specified&nbsp;image&nbsp;or<br>
@@ -56,8 +56,8 @@ random&nbsp;image&nbsp;from&nbsp;test&nbsp;set.</tt></dd></dl>
 <strong>ENTROPY_SCAN_FILE</strong> = 'dataset-scans/dataset_scan_results.json'<br>
 <strong>GENERATED_IMAGES_PATH</strong> = 'generated/'<br>
 <strong>METRICS_FILE</strong> = 'metrics/calculated_metrics.json'<br>
-<strong>MODEL_PATH</strong> = 'models/refactor-test-run-2/'<br>
+<strong>MODEL_PATH</strong> = 'models/final-model-1.0/'<br>
 <strong>TESTED_FILE_PATH</strong> = ''<br>
 <strong>actions</strong> = {'test-set-metrics': &lt;function show_metrics&gt;, 'train-set-entropy': &lt;function train_set_entropy&gt;, 'visual-test': &lt;function visual_test&gt;}<br>
-<strong>device</strong> = device(type='cpu')</td></tr></table>
+<strong>device</strong> = device(type='cuda')</td></tr></table>
 </body></html>

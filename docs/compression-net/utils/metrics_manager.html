@@ -8,7 +8,7 @@
 <td valign=bottom>&nbsp;<br>
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>metrics_manager</strong></big></big></font></td
 ><td align=right valign=bottom
-><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/home/mike/repos/compression-net/utils/metrics_manager.py">/home/mike/repos/compression-net/utils/metrics_manager.py</a></font></td></tr></table>
+><font color="#ffffff" face="helvetica, arial"><a href="../../..">index</a><br><a href="file:/home/mike/repos/compression-net/utils/metrics_manager.py">/home/mike/repos/compression-net/utils/metrics_manager.py</a></font></td></tr></table>
     <p></p>
 <p>
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
@@ -43,14 +43,14 @@
 <font color="#000000" face="helvetica, arial"><a name="Metrics">class <strong>Metrics</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float)&nbsp;-&amp;gt;&nbsp;None<br>
+<td colspan=2><tt><a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float,&nbsp;ms_ssim_value:&nbsp;float,&nbsp;psnr:&nbsp;float)&nbsp;-&amp;gt;&nbsp;None<br>
 &nbsp;<br>
-<a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float)<br>&nbsp;</tt></td></tr>
+<a href="#Metrics">Metrics</a>(entropy:&nbsp;dict,&nbsp;mse_loss:&nbsp;float,&nbsp;perceptual_loss:&nbsp;float,&nbsp;ssim_value:&nbsp;float,&nbsp;ms_ssim_value:&nbsp;float,&nbsp;psnr:&nbsp;float)<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Metrics-__eq__"><strong>__eq__</strong></a>(self, other)</dt></dl>
 
-<dl><dt><a name="Metrics-__init__"><strong>__init__</strong></a>(self, entropy: dict, mse_loss: float, perceptual_loss: float, ssim_value: float) -&gt; None</dt></dl>
+<dl><dt><a name="Metrics-__init__"><strong>__init__</strong></a>(self, entropy: dict, mse_loss: float, perceptual_loss: float, ssim_value: float, ms_ssim_value: float, psnr: float) -&gt; None</dt></dl>
 
 <dl><dt><a name="Metrics-__repr__"><strong>__repr__</strong></a>(self)</dt></dl>
 
@@ -64,9 +64,9 @@ Data descriptors defined here:<br>
 </dl>
 <hr>
 Data and other attributes defined here:<br>
-<dl><dt><strong>__annotations__</strong> = {'entropy': &lt;class 'dict'&gt;, 'mse_loss': &lt;class 'float'&gt;, 'perceptual_loss': &lt;class 'float'&gt;, 'ssim_value': &lt;class 'float'&gt;}</dl>
+<dl><dt><strong>__annotations__</strong> = {'entropy': &lt;class 'dict'&gt;, 'ms_ssim_value': &lt;class 'float'&gt;, 'mse_loss': &lt;class 'float'&gt;, 'perceptual_loss': &lt;class 'float'&gt;, 'psnr': &lt;class 'float'&gt;, 'ssim_value': &lt;class 'float'&gt;}</dl>
 
-<dl><dt><strong>__dataclass_fields__</strong> = {'entropy': Field(name='entropy',type=&lt;class 'dict'&gt;,default...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'mse_loss': Field(name='mse_loss',type=&lt;class 'float'&gt;,defau...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'perceptual_loss': Field(name='perceptual_loss',type=&lt;class 'float'...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'ssim_value': Field(name='ssim_value',type=&lt;class 'float'&gt;,def...rue,metadata=mappingproxy({}),_field_type=_FIELD)}</dl>
+<dl><dt><strong>__dataclass_fields__</strong> = {'entropy': Field(name='entropy',type=&lt;class 'dict'&gt;,default...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'ms_ssim_value': Field(name='ms_ssim_value',type=&lt;class 'float'&gt;,...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'mse_loss': Field(name='mse_loss',type=&lt;class 'float'&gt;,defau...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'perceptual_loss': Field(name='perceptual_loss',type=&lt;class 'float'...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'psnr': Field(name='psnr',type=&lt;class 'float'&gt;,default=&lt;...rue,metadata=mappingproxy({}),_field_type=_FIELD), 'ssim_value': Field(name='ssim_value',type=&lt;class 'float'&gt;,def...rue,metadata=mappingproxy({}),_field_type=_FIELD)}</dl>
 
 <dl><dt><strong>__dataclass_params__</strong> = _DataclassParams(init=True,repr=True,eq=True,order=False,unsafe_hash=False,frozen=False)</dl>
 
@@ -171,6 +171,6 @@ Examples::<br>
     
 <tr><td bgcolor="#55aa55"><tt>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</tt></td><td>&nbsp;</td>
 <td width="100%"><strong>METRICS_FILE</strong> = 'metrics/calculated_metrics.json'<br>
-<strong>MODEL_PATH</strong> = 'models/refactor-test-run-2/'<br>
-<strong>device</strong> = device(type='cpu')</td></tr></table>
+<strong>MODEL_PATH</strong> = 'models/final-model-1.0/'<br>
+<strong>device</strong> = device(type='cuda')</td></tr></table>
 </body></html>
