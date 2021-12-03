@@ -65,8 +65,8 @@ def train_set_entropy():
 
 def show_metrics():
     """
-    Function presenting MSE, Perceptual loss and SSIM metrics
-    calculated on test part of data set.
+    Function presenting MSE, Perceptual loss, SSIM, MS-SSIM
+    and PSNR metrics calculated on test part of data set.
     """
     if not os.path.exists(METRICS_FILE):
         MetricsManager(ImageDataLoader().test_loader(test_batch=1)).run()
@@ -81,9 +81,9 @@ def show_metrics():
         key: sorted(results, key=lambda x: x.entropy[key])
         for key in ENTROPY_SCAN_CHANNELS
     }
-    metrics = ("mse_loss", "perceptual_loss", "ssim_value")
+    metrics = ("ssim_value", "ms_ssim_value", "psnr")
 
-    fig, ax = plt.subplots(nrows=3, ncols=4)
+    fig, ax = plt.subplots(nrows=len(metrics), ncols=4)
     fig.suptitle("Test set metrics")
     for col_idx, key in enumerate(ENTROPY_SCAN_CHANNELS):
         for row_idx, metric_value in enumerate(metrics):
@@ -123,15 +123,19 @@ def present_visual_effect(source_image, normalized_image, image_transform):
     output = image_tensor.detach()
 
     generated_image = image_transform.denormalize(output)
-    generated_image = adjust_saturation(generated_image, 1.2)
-    generated_image = adjust_contrast(generated_image, 1.1)
+    generated_image = adjust_saturation(generated_image, 1.1)
+    generated_image = adjust_contrast(generated_image, 1.2)
 
     filename = f"generated-{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
+    orig_filename = f"original-{datetime.now().strftime('%Y%m%d%H%M%S')}.png"
     if not os.path.exists(GENERATED_IMAGES_PATH):
         os.mkdir(GENERATED_IMAGES_PATH)
 
     im = ToPILImage()(generated_image)
     im.save(os.path.join(GENERATED_IMAGES_PATH, filename), "PNG")
+
+    im = ToPILImage()(source_image.permute(2, 0, 1))
+    im.save(os.path.join(GENERATED_IMAGES_PATH, orig_filename), "PNG")
 
     _, grid = plt.subplots(1, 2)
     grid[0].imshow(source_image)
@@ -161,7 +165,7 @@ def visual_test():
     iterator = iter(test_loader)
     raw_batch = iterator.next()
     normalized_image = raw_batch[0][0]
-    image = normalized_image.cpu().permute(1, 2, 0)
+    image = image_transform.denormalize(normalized_image).cpu().permute(1, 2, 0)
     return present_visual_effect(image, normalized_image, image_transform)
 
 

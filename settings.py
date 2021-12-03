@@ -6,7 +6,7 @@ BATCH_SIZE = 3
 GENERATED_IMAGES_PATH = "generated/"
 
 # Training
-MODEL_PATH = "models/refactor-test-run-2/"
+MODEL_PATH = "models/final-model-1.0/"
 EPOCHS = 3
 TENSORBOARD_LOGS = "logs/latest-logs"
 ENTROPY_SCAN_FILE = "dataset-scans/dataset_scan_results.json"

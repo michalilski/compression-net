@@ -4,6 +4,7 @@ from dataclasses import asdict, dataclass
 
 import torch
 from skimage.metrics import structural_similarity as ssim
+from skimage.metrics import peak_signal_noise_ratio as psnr
 from torch.nn import MSELoss
 from torch.utils.data import DataLoader
 from tqdm import tqdm
@@ -12,6 +13,7 @@ from loss import perceptual_loss
 from model import Encoder, Generator
 from settings import METRICS_FILE, MODEL_PATH, device
 from utils.entropy_manager import EntropyManager
+from pytorch_msssim import ms_ssim
 
 
 @dataclass
@@ -20,6 +22,8 @@ class Metrics:
     mse_loss: float
     perceptual_loss: float
     ssim_value: float
+    ms_ssim_value: float
+    psnr: float
 
 
 class MetricsManager:
@@ -57,6 +61,7 @@ class MetricsManager:
         tested_entries = []
 
         for i, data in enumerate(tqdm(self.dataloader)):
+
             source_image = data[0].to(device)
             encoded = encoder(source_image)
             generated = generator(encoded)
@@ -67,11 +72,23 @@ class MetricsManager:
             mse_loss = self.mse(generated, source_image)
             vgg_loss = perceptual_loss(generated, source_image)
 
-            ssim_loss = ssim(
+            ssim_value = ssim(
                 generated[0].permute(1, 2, 0).cpu().detach().numpy(),
                 source_image[0].permute(1, 2, 0).cpu().detach().numpy(),
                 data_range=float(generated[0].max() - generated[0].min()),
                 multichannel=True,
+            )
+
+            ms_ssim_value = ms_ssim(
+                generated,
+                source_image,
+                data_range=float(generated[0].max() - generated[0].min())
+            ).item()
+
+            psnr_value = psnr(
+                generated[0].permute(1, 2, 0).cpu().detach().numpy(),
+                source_image[0].permute(1, 2, 0).cpu().detach().numpy(),
+                data_range=float(generated[0].max() - generated[0].min())
             )
 
             tested_entries.append(
@@ -79,7 +96,9 @@ class MetricsManager:
                     entropy=source_entropy,
                     mse_loss=float(mse_loss),
                     perceptual_loss=float(vgg_loss),
-                    ssim_value=ssim_loss,
+                    ssim_value=ssim_value,
+                    ms_ssim_value=ms_ssim_value,
+                    psnr=psnr_value,
                 )
             )
 
