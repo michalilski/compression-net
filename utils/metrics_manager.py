@@ -45,7 +45,7 @@ class MetricsManager:
         if not os.path.exists(os.path.dirname(METRICS_FILE)):
             os.makedirs(os.path.dirname(METRICS_FILE))
         with open(METRICS_FILE, "w+") as file:
-            file.write(json.dumps(json_metrics))
+            file.write(json.dumps(str(json_metrics)))
 
     def run(self):
         """

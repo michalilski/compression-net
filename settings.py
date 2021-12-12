@@ -7,7 +7,7 @@ GENERATED_IMAGES_PATH = "generated/"
 
 # Training
 MODEL_PATH = "models/final-model-1.0/"
-EPOCHS = 3
+EPOCHS = 6
 TENSORBOARD_LOGS = "logs/latest-logs"
 ENTROPY_SCAN_FILE = "dataset-scans/dataset_scan_results.json"
 METRICS_FILE = "metrics/calculated_metrics.json"

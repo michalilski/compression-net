@@ -1,3 +1,7 @@
+### Environment setup (recommended)
+- Run `python3 -m venv env`
+- Run `source env/bin/activate`
+
 ### Installation
 - Run `pip install -r requirements.txt`
 

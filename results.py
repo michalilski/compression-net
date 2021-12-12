@@ -1,4 +1,5 @@
 import argparse
+import ast
 import json
 import os
 from datetime import datetime
@@ -74,14 +75,14 @@ def show_metrics():
     with open(METRICS_FILE, "r") as file:
         results = file.read()
 
-    results = json.loads(results)
+    results = ast.literal_eval(results[1:-1])
     results = [Metrics(**result) for result in results]
 
     sorted_results = {
         key: sorted(results, key=lambda x: x.entropy[key])
         for key in ENTROPY_SCAN_CHANNELS
     }
-    metrics = ("ssim_value", "ms_ssim_value", "psnr")
+    metrics = ("mse_loss", "perceptual_loss", "ssim_value", "ms_ssim_value", "psnr")
 
     fig, ax = plt.subplots(nrows=len(metrics), ncols=4)
     fig.suptitle("Test set metrics")
