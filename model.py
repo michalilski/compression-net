@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from torch.nn.modules.padding import ReflectionPad2d
-
+from settings import device
 
 class Encoder(nn.Module):
     """
@@ -149,11 +149,11 @@ class Discriminator(nn.Module):
         :param x: input data, tuple of encoded part and image tensor
         :return: discriminator result
         """
-        y = x['encoded'].to('cuda')
+        y = x['encoded'].to(device)
         y = self.l1(y)
         y = self.l2(y)
         y = self.l3(y)
-        x = x['img'].to('cuda')
+        x = x['img'].to(device)
         x = torch.cat((x, y), 1)
         x = self.l6(x)
         x = self.l7(x)

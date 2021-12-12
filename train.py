@@ -35,10 +35,10 @@ def train():
         and path.isfile(path.join(MODEL_PATH, "discriminator.pth"))
     ):
         logger.info("Loading models...")
-        encoder.load_state_dict(torch.load(path.join(MODEL_PATH, "encoder.pth")))
-        generator.load_state_dict(torch.load(path.join(MODEL_PATH, "generator.pth")))
+        encoder.load_state_dict(torch.load(path.join(MODEL_PATH, "encoder.pth"), map_location=device))
+        generator.load_state_dict(torch.load(path.join(MODEL_PATH, "generator.pth"), map_location=device))
         discriminator.load_state_dict(
-            torch.load(path.join(MODEL_PATH, "discriminator.pth"))
+            torch.load(path.join(MODEL_PATH, "discriminator.pth"), map_location=device)
         )
 
     encoder.train()

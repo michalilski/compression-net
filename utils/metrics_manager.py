@@ -56,8 +56,8 @@ class MetricsManager:
         """
         encoder = Encoder().to(device)
         generator = Generator().to(device)
-        encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth")))
-        generator.load_state_dict(torch.load(os.path.join(MODEL_PATH, "generator.pth")))
+        encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth"), map_location=device))
+        generator.load_state_dict(torch.load(os.path.join(MODEL_PATH, "generator.pth"), map_location=device))
         tested_entries = []
 
         for i, data in enumerate(tqdm(self.dataloader)):

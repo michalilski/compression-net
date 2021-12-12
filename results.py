@@ -110,8 +110,8 @@ def present_visual_effect(source_image, normalized_image, image_transform):
     encoder = Encoder().to(device)
     generator = Generator().to(device)
 
-    encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth")))
-    generator.load_state_dict(torch.load(os.path.join(MODEL_PATH, "generator.pth")))
+    encoder.load_state_dict(torch.load(os.path.join(MODEL_PATH, "encoder.pth"), map_location=torch.device('cpu')))
+    generator.load_state_dict(torch.load(os.path.join(MODEL_PATH, "generator.pth"), map_location=torch.device('cpu')))
 
     normalized_image = torch.tensor(np.expand_dims(normalized_image, axis=0))
     normalized_image = normalized_image.to(device)
