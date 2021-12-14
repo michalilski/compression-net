@@ -158,6 +158,7 @@ def visual_test():
         if not os.path.exists(TESTED_FILE_PATH):
             raise FileNotFoundError(TESTED_FILE_PATH)
         image = Image.open(TESTED_FILE_PATH)
+        image = image.convert("RGB")
         normalized_image = image_transform.transform(image)
         image = image_transform.denormalize(normalized_image).cpu().permute(1, 2, 0)
         return present_visual_effect(image, normalized_image, image_transform)
